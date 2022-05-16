@@ -27,7 +27,7 @@ class Usuario(models.Model):
     nombre = models.CharField(max_length=100, help_text="Nombre de la persona")
     apellido = models.CharField(max_length=100, help_text="Apellido de la persona")
     fecha_nacimiento= models.DateField(help_text="Fecha de nacimiento de la persona")
-    dni=models.IntegerField(max_length=8, help_text="DNI de la persona")
+    dni=models.IntegerField( help_text="DNI de la persona")
     residencia = models.TextField(help_text="Descripción de la tarea")
     historial_vacunas = models.ForeignKey(User, on_delete=models.CASCADE)
     id_vacunas_aplicadas = models.ForeignKey(Vacuna, on_delete=models.CASCADE)

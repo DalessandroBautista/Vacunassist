@@ -1,0 +1,28 @@
+{% extends "website/registration/layoutUser.html" %}
+
+{% block content %}
+<div style="margin-left: 30%; ">
+  <h2>Formulario de Registro</h2>
+  <form method="post">
+    <div class="form-group">
+      {% csrf_token %}
+      {% for campo in form %}
+        <p>
+          {{ campo.label_tag }}<br>
+          {{ campo }}
+          {% if campo.help_text %}
+            <small style="color: grey">{{ campo.help_text }}</small>
+          {% endif %}
+          {% for error in campo.errors %}
+            <p style="color: red">{{ error }}</p>
+          {% endfor %}
+        </p>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
+    
+  </form>
+</div>
+ 
+  
+{% endblock %}

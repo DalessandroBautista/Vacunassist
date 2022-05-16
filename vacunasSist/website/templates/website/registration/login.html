@@ -1,0 +1,46 @@
+{% extends "website/registration/layoutUser.html" %}
+
+{% block content %}
+<div style="margin-left: 30%;">
+  {% if form.errors %}
+  <p>El usuario y la clave no coinciden, por favor intente nuevamente.</p>
+  {% endif %}
+  
+  {% if next %}
+      {% if user.is_authenticated %}
+      <p>Tu cuenta no tiene acceso a esta página. Para proceder,
+          por favor inicie sesión con una cuenta que tenga acceso.</p>
+      {% else %}
+      <p>Inicie sesión para ver esta página.</p>
+      {% endif %}
+  {% endif %}
+  
+  <form method="post" action="{% url 'login' %}">
+  {% csrf_token %}
+  
+  <div class="form-group">
+    <td style="color:red">Usuario</td>
+    <td style="margin-left: 50%;">{{ form.username }}</td>
+    <small id="emailHelp" class="form-text text-muted">Nunca compartiremos tu información con nadie.</small>
+  </div>
+  <div class="form-group">
+    <td>Contraseña</td>
+    <td>{{ form.password }}</td>
+  </div>
+  
+  <div>
+    <input class="btn btn-primary" type="submit" value="Ingresar" />
+    <input type="hidden" name="next" value="{{ next }}" />
+  </div>
+  </form>
+  
+
+  {# Asume que configuras la vista password_reset en tu URLconf #}
+  
+  <p><a href="{% url 'password_reset' %}">¿Olvidó su contraseña?</a></p>
+  
+  <p><a href="{% url 'register' %}">Registrarse</a></p>
+</div>
+
+
+{% endblock %}
