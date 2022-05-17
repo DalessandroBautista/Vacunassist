@@ -22,8 +22,18 @@ def index(request):
 def registrarse(request):
     if request.method == 'POST':
         form = FormularioUsuario(request.POST)
+        
         if form.is_valid():
-            form.save()          
+            mail=request.POST.get("mail")            
+            form.save()
+            infoForm=form.cleaned_data
+            send_mail(
+                'VacunasSist',
+                'Tu cuenta ha sido creada exitosamente!',
+                'vacunassist2022@gmail.com',
+                [mail]
+                
+            )          
             return HttpResponseRedirect(reverse('login'))
     else:
         form = FormularioUsuario()
@@ -43,6 +53,7 @@ def login(request):
     return render(request, "website/registration/login.html",{
         "form": form,
     })
+
 
 @login_required
 def logout(request):
