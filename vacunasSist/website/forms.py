@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from website.models import Usuario
+from django.contrib.auth.forms import AuthenticationForm
 class FormularioContacto(forms.Form):
     asunto=forms.CharField(label="Asunto",required=True)
     email=forms.EmailField(label="Emai",required=True)
@@ -13,21 +15,90 @@ class LoginForm(forms.Form):
         label='Usuario', widget=forms.TextInput(attrs={'class': 'usuario'}), max_length=150, required=True, )
     password = forms.CharField(
         label='Password', widget=forms.PasswordInput(), max_length=30, required=True, )
-class RegistroForm(UserCreationForm):
-    username = forms.CharField(
-        label='Usuario', widget=forms.TextInput(attrs={'class': 'usuario'}), max_length=150, required=True, help_text='Requerido. 150 caracteres o menos. Letras, dígitos y @ /. / + / - / _ solamente.')
-    password1 = forms.CharField(
-        label='Password', widget=forms.PasswordInput(), max_length=30, required=True, help_text='Requerido. Al menos 8 caracteres y no pueden ser todos numeros.')
-    password2 = forms.CharField(
-        label='Repetir Password', widget=forms.PasswordInput(), max_length=30, required=True, help_text='Requerido. Ingrese la misma contraseña que antes, para verificación.')
-    first_name = forms.CharField(
-        label='Nombre', widget=forms.TextInput(attrs={'class': 'nombre'}), max_length=30, required=False, help_text='Opcional.')
-    last_name = forms.CharField(
-        label='Apellido', widget=forms.TextInput(attrs={'class': 'apellido'}), max_length=30, required=False, help_text='Opcional.')
-    email = forms.EmailField(
-        label='Email', widget=forms.TextInput(attrs={'class': 'email'}), max_length=254, required=True, help_text='Se requiere una direccion de email valida.')
 
+class FormularioLogin(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(FormularioLogin, self).__init__(*args,**kwargs)
+        self.fields['username'].widget.attrs['class'] = 'form-control'
+        self.fields['username'].widget.attrs['placeholder'] = 'Nombre de Usuario'
+        self.fields['password'].widget.attrs['class'] = 'form-control'
+        self.fields['password'].widget.attrs['placeholder'] = 'Contraseña'
+
+class FormularioUsuario(forms.ModelForm):
+    
+    password1= forms.CharField(label="Contraseña", widget= forms.PasswordInput(
+        attrs={
+            'class':'form-control',
+            'placeholder':'Ingrese su contraseña',
+            'required': 'required'
+        }
+        ))
+    password2= forms.CharField(label="Verificacion de contraseña", widget= forms.PasswordInput(
+        attrs={
+            'class':'form-control',
+            'placeholder':'Repita su contraseña',
+            'required': 'required'
+        }
+        ))
+    
     class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
+        model= Usuario
+        fields=('username', 'email', 'nombre', 'apellido', 'dni', 'fecha_nacimiento')
+        widgets= {
+            'username': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su nombre de usuario'
+                    }
+            ),
+            'email': forms.EmailInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su email'
+                    }
+            ),
+            'nombre': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su nombre'
+                    }
+            ),
+            'apellido': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su apellido'
+                    }
+            ),
+            'dni': forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su DNI'
+                    }
+            ),
+            'fecha_nacimiento': forms.DateInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su fecha de nacimiento'
+                    }
+            )
+        }
+    def clean_password2(self):
+        """ Validación de Contraseña
+        Metodo que valida que ambas contraseñas ingresadas sean igual, esto antes de ser encriptadas
+        y guardadas en la base dedatos, Retornar la contraseña Válida.
+        Excepciones:
+        - ValidationError -- cuando las contraseñas no son iguales muestra un mensaje de error
+        """
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 != password2:
+            raise forms.ValidationError('Contraseñas no coinciden!')
+        return password2
 
+    def save(self,commit = True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password1'])
+        if commit:
+            user.save()
+        return user
+    

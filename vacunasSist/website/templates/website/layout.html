@@ -20,10 +20,10 @@
             <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <IMG href="#"style="text-align: left;" src="https://i.imgur.com/zGzig89.png" width=75 height=75>
+                        <IMG href="{% url 'index' %}"style="text-align: left;" src="https://i.imgur.com/zGzig89.png" width=75 height=75>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link">VacunasSist</a>
+                        <a class="nav-link" href="{% url 'index' %}">VacunasSist</a>
                     </li>
                 </ul>
             </div>
@@ -42,11 +42,11 @@
                 <ul class="navbar-nav ml-auto">
  
                     {% if not request.user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="#">Iniciar Sesión</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Registrar</a></li>
                     
                     {% else %}
-                    <li class="dropdown-item" href="#">Logout</li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</li>
                     {% endif %}
                 </ul>
             </div>

@@ -2,6 +2,8 @@ from django.db import models
 
 from django.contrib.auth.models import User
 
+from django.contrib.auth.models import AbstractUser, AbstractBaseUser, BaseUserManager
+
 
 class Vacuna(models.Model):
     nombre=models.CharField(max_length=40)
@@ -22,16 +24,44 @@ class Vacunatorio(models.Model):
     
 """ acá podemos hacer modelo de persona y que usuario admin y vacunador hereden lo básico"""
 
-
-class Usuario(models.Model):
-    nombre = models.CharField(max_length=100, help_text="Nombre de la persona")
-    apellido = models.CharField(max_length=100, help_text="Apellido de la persona")
+class UsuarioManager(BaseUserManager):
+    def create_user(self, email, username, nombre, apellido, password =None):
+        if not email: 
+            raise ValidationError("EL usuario debne tener un email asociado")  
+        user= self.model(
+            username = username,
+            email= self.normalize_email(email),
+            nombre =nombre,
+            apellido=apellido,
+            )
+        user.set_pasosword(password)
+        user.save()
+        return user
+    def create_superuser(self, email, username, nombre, apellido, password = None):
+        user = self.create_user(
+            email,
+            username=username,
+            nombre=nombre,
+            apellido=apellido,
+            password=password
+            )
+        user.usuario_administrador = True
+        user.save()
+        return user
+    
+class Usuario(AbstractBaseUser):
+    username =models.CharField('Nombre de usuario', unique=True, max_length=100)
+    email = models.EmailField('Correo electrónico', max_length=254, unique=True)
+    nombre = models.CharField('Nombre', max_length=254)
+    apellido = models.CharField('apellido', max_length=254)
+    dni=models.IntegerField(help_text="DNI de la persona", unique=True)
     fecha_nacimiento= models.DateField(help_text="Fecha de nacimiento de la persona")
-    dni=models.IntegerField( help_text="DNI de la persona")
-    residencia = models.TextField(help_text="Descripción de la tarea")
-    historial_vacunas = models.ForeignKey(User, on_delete=models.CASCADE)
-    id_vacunas_aplicadas = models.ForeignKey(Vacuna, on_delete=models.CASCADE)
+    residencia = models.TextField(help_text="Descripción de la tarea", null=True)
+    id_vacunas_aplicadas = models.ForeignKey(Vacuna, on_delete=models.CASCADE, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.nombre
+    usuario_activo= models.BooleanField(default=True)
+    usuario_administrador = models.BooleanField(default=False)
+    objects= UsuarioManager()
+    
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email','nombre', 'apellido','dni', 'fecha_nacimiento']

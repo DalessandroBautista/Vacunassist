@@ -76,7 +76,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'vacunasSist.wsgi.application'
 
-
+AUTH_USER_MODEL = 'website.Usuario'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 

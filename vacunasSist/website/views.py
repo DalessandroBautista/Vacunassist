@@ -20,25 +20,23 @@ def index(request):
     return render(request, "website/index.html")
 
 def registrarse(request):
-    print("nice register")
     if request.method == 'POST':
-        form = RegistroForm(request.POST)
+        form = FormularioUsuario(request.POST)
         if form.is_valid():
             form.save()          
             return HttpResponseRedirect(reverse('login'))
     else:
-        form = RegistroForm()
+        form = FormularioUsuario()
     return render(request, 'website/registration/registro.html', {
         'form': form
         })
 
 def login(request):
-    print("el formulario es algo")
+    print("estoy en login")
     if request.method=="POST":
-       form=LoginForm(request.POST)
-       
+       form=FormularioLogin(request.POST)
+       print(form)
        if form.is_valid():
-           print("el formulario es valido")
            return render(request, "website/index.html")
     else:
         form=LoginForm()
