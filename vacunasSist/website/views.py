@@ -24,16 +24,24 @@ def registrarse(request):
         form = FormularioUsuario(request.POST)
         
         if form.is_valid():
-            mail=request.POST.get("mail")            
+            
+            mail=request.POST.get("email")  
+            print("request email")
+            print(request.POST.get("email"))
+            print("request post")
+            print(request.POST)
+            print(" email")
+            print(mail)          
             form.save()
             infoForm=form.cleaned_data
             send_mail(
                 'VacunasSist',
                 'Tu cuenta ha sido creada exitosamente!',
                 'vacunassist2022@gmail.com',
-                [mail]
-                
-            )          
+                [mail],
+                fail_silently=False
+            )     
+            messages.success(request, "Te has registrado exitosamente")   
             return HttpResponseRedirect(reverse('login'))
     else:
         form = FormularioUsuario()

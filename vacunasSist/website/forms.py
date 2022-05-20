@@ -102,3 +102,14 @@ class FormularioUsuario(forms.ModelForm):
             user.save()
         return user
     
+class FormularioDatosDePerfil(forms.ModelForm):
+    class Meta:
+        model= Usuario
+        fields=('username', 'email', 'nombre', 'apellido', 'dni', 'fecha_nacimiento', 'residencia', 'vacunatorio_preferencia', 'historial_vacunacion')
+        widgets= {
+            'username': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su nombre de usuario'
+                    }
+            )}
