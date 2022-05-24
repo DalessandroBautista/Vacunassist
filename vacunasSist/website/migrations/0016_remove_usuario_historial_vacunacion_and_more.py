@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('website', '0014_historial_vacunacion_and_more.py'),
+        ('website', '0015_historial_vacunacion_and_more.py'),
     ]
 
     operations = [
