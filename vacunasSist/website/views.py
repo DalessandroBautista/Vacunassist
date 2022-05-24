@@ -50,10 +50,14 @@ def login(request):
         password=request.POST.get("password")
         try:
             user = Usuario.objects.get(username=username)
-            if (user.password == password):
+            print(password)
+            print(user.password)
+            print(username)
+            print(user.username)
+            try:
                 auth.login(request, user)
                 return render(request, "website/index.html")
-            else:
+            except:
                 form=LoginForm()
                 messages.error(request,"El usuario o la contraseña son incorrectos")
                 return render(request, "website/registration/login.html",{"form": form})
