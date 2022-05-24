@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('website', '0009_estadosturno_and_more'),
+        ('website', '0010_estadosturno_and_more.py'),
     ]
 
     operations = [
