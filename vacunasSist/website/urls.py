@@ -22,6 +22,6 @@ urlpatterns = [
     path('ver_turnos',views.verTurnos, name="ver_turnos"),
     path('ver_vacunas_aplicadas',views.verVacunasAplicadas, name="ver_vacunas_aplicadas"),
     path('certificado/<int:vacuna_id>/',views.obtenerCertificado, name="certificado"),
-
+    path('informacion_vacuna', views.verInformacion, name="informacion_vacuna"),
 
 ]
