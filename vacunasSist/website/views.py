@@ -11,9 +11,11 @@ import random
 from django.urls import reverse
 from django.views.generic import View, TemplateView, ListView
 from django.contrib import messages
-from website.models import Vacuna
-from website.models import Turno
-from website.models import Usuario
+from website.models import Vacuna,Turno,Usuario,VacunaDeUsuario
+import reportlab
+import io
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
 # Create your views here.
 
 """ 
@@ -62,6 +64,7 @@ def login(request):
                 auth.login(request, user)
                 return render(request, "website/index.html")
             except:
+                print(errors)
                 form=LoginForm()
                 messages.error(request,"El usuario o la contraseña son incorrectos")
                 return render(request, "website/registration/login.html",{"form": form})
@@ -199,3 +202,63 @@ def solicitarTurnoGripe(request):
     # Sino mostrar alerta de  no validado o no tener residencia en LP
     
  
+def verTurnos(request):
+    user_id = request.user.id
+    lista_turnos= Turno.objects.filter(user_id=user_id).filter(asignado=True)
+    print(lista_turnos)
+    if (lista_turnos):
+        return render(request, 'website/ver_turnos.html', {
+            'lista_turnos':lista_turnos
+        })
+    else:
+        messages.error(request, 'Usted no tiene turnos aceptados ')
+        return render(request, 'website/index.html',{})
+
+
+def verTurnosPendientes(request):
+    user_id = request.user.id
+    lista_turnos= Turno.objects.filter(user_id=user_id).filter(asignado=False)
+    print(lista_turnos)
+    if (lista_turnos):
+        return render(request, 'website/ver_turnos_pendientes.html', {
+            'lista_turnos':lista_turnos
+        })
+    else:
+        messages.error(request, 'Usted no tiene turnos pendientes')
+        return render(request, 'website/index.html',{})
+    
+
+def verVacunasAplicadas(request):
+    user_id = request.user.id
+    print(user_id)
+    id_vacunas= VacunaDeUsuario.objects.filter(user_id=user_id)
+    lista_vacunas=[]
+    for vacuna in id_vacunas:
+        print(vacuna)
+        lista_vacunas.append(Vacuna.objects.get(id=vacuna.vacuna_id))
+        
+    print(lista_vacunas)
+    if (lista_vacunas):
+        return render(request, 'website/ver_vacunas_aplicadas.html', {
+            'lista_vacunas':lista_vacunas
+        })
+    else:
+        messages.error(request, 'Usted no tiene vacunas aplicadas')
+        return render(request, 'website/index.html',{})
+    
+def obtenerCertificado(request, vacuna_id):
+    vacuna=Vacuna.objects.get(id=vacuna_id)
+    buffer = io.BytesIO()
+
+    p = canvas.Canvas(buffer)
+
+    mensaje= "Este documento certifica que usted se vacunó para: " + vacuna.nombre
+    p.drawString(20, 20, mensaje)
+
+    p.showPage()
+    p.save()
+
+
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='certificado.pdf')
+    

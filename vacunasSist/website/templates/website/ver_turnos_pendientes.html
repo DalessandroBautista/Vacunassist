@@ -1,0 +1,31 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+<div class="container">
+
+  <div class="row">
+    <div class="col">
+        <form action="" method="post" enctype=multipart/form-data>
+            {% csrf_token %}
+            <table>
+                {% for un_turno in lista_turnos %}
+                <div class="col mb-5">
+                    <div class="card h-100">
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder">{{ un_turno.vacuna }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor  %}    
+            </table>
+        </form>
+    </div>
+        
+    </div>
+  </div>
+
+</div>
+
+ {% endblock %}

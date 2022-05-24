@@ -235,12 +235,6 @@ class UpdatePasswordForm(forms.ModelForm):
                 raise forms.ValidationError('Contraseñas no coinciden!')
             return password2
         
-        def save(self, user):
-            print(user)
-            password = self.cleaned_data.get('password')
-            user.set_password('password')
-            user.save()
-            return user
         
                 
 class FormularioEmail(forms.ModelForm):

@@ -57,7 +57,6 @@ class Usuario(AbstractBaseUser):
     dni=models.IntegerField(help_text="DNI de la persona", unique=True)
     fecha_nacimiento= models.DateField(help_text="Fecha de nacimiento de la persona")
     residencia = models.TextField(help_text="Descripción de la tarea", null=True)
-    id_vacunas_aplicadas = models.ForeignKey(Vacuna, on_delete=models.CASCADE, null=True)
     vacunatorio_preferencia =models.ForeignKey(Vacunatorio, on_delete=models.CASCADE,null=True)
     historial_vacunacion=models.CharField('Historial de vacunación', max_length=1000, null= True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
@@ -74,5 +73,12 @@ class Turno(models.Model):
     vacuna = models.CharField(max_length=20)
     fecha =  models.DateField(null=True)
     asignado = models.BooleanField(default=False)
-
+    #estado= models.ForeignKey(EstadosTurno, on_delete=models.CASCADE)
 #    Turno.objects.filter(estado=True).filter(user__id=request.user.id)    
+
+class EstadosTurno(models.Model):
+    estado= models.CharField(max_length=30)
+    
+class VacunaDeUsuario(models.Model):
+    user= models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    vacuna= models.ForeignKey(Vacuna, on_delete=models.CASCADE)

@@ -18,6 +18,10 @@ urlpatterns = [
     path('solicitar_turno',views.solicitarTurno, name="solicitar_turno"),
     path('solicitar_turno_covid',views.solicitarTurnoCovid, name="solicitar_turno_covid"),
     path('solicitar_turno_gripe',views.solicitarTurnoGripe, name="solicitar_turno_gripe"),
+    path('ver_turnos_pendientes',views.verTurnosPendientes, name="ver_turnos_pendientes"),
+    path('ver_turnos',views.verTurnos, name="ver_turnos"),
+    path('ver_vacunas_aplicadas',views.verVacunasAplicadas, name="ver_vacunas_aplicadas"),
+    path('certificado/<int:vacuna_id>/',views.obtenerCertificado, name="certificado"),
 
 
 ]

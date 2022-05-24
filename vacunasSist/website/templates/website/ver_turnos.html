@@ -1,0 +1,30 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+<div class="container">
+
+  <div class="row">
+    <div class="col">
+            <table>
+                <h1>Estos son tus próximos turnos</h1>
+                {% for un_turno in lista_turnos %}
+                <div class="col mb-5">
+                    <div class="card h-100">
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder">{{ un_turno.vacuna }}</h5>
+                                <b> {{ un_turno.fecha }} </b> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor  %}
+            </table>
+    </div>
+        
+    </div>
+  </div>
+
+</div>
+
+ {% endblock %}

@@ -1,0 +1,32 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+<div class="container">
+
+  <div class="row">
+    <div class="col">
+        <form action="" method="post" enctype=multipart/form-data>
+            {% csrf_token %}
+            <table>
+                {% for una_vacuna in lista_vacunas %}
+                <div class="col mb-5">
+                    <div class="card h-100">
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder">{{ una_vacuna.nombre }}</h5>
+                                <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'certificado' una_vacuna.id %}">Obtener certificado de vacunación</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor  %}    
+            </table>
+        </form>
+    </div>
+        
+    </div>
+  </div>
+
+</div>
+
+ {% endblock %}

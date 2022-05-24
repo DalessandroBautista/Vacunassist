@@ -37,6 +37,9 @@
                             <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'verPerfil' %}">Ver perfil</a></li>
                             {% if request.user.identidad_verificada  %} 
                                 <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'solicitar_turno' %}">Solicitar turno</a></li>
+                                <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'ver_turnos' %}">Ver turnos</a></li>
+                                <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'ver_turnos_pendientes' %}">Ver turnos pendientes</a></li>
+                                <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'ver_vacunas_aplicadas' %}">Ver vacunas aplicadas</a></li>
                             {% endif %}
                         {% endif %}
                 </ul>
