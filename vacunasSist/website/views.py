@@ -273,3 +273,6 @@ def obtenerCertificado(request, vacuna_id):
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename='certificado.pdf')
     
+def verInformacion(request):
+    list_vacunas= Vacuna.objects.all()
+    return render(request, 'website/informacion_vacuna.html', {'list_vacunas': list_vacunas })
