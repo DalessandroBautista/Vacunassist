@@ -111,7 +111,7 @@ class FormularioUsuario(forms.ModelForm):
 class UpdateUsuarioForm(forms.ModelForm):
     class Meta:
         model= Usuario
-        fields=('username', 'email', 'nombre', 'apellido', 'dni', 'identidad_verificada', 'fecha_nacimiento', 'residencia', 'vacunatorio_preferencia', 'historial_vacunacion' )
+        fields=('username', 'email', 'nombre', 'apellido', 'dni', 'identidad_verificada', 'fecha_nacimiento', 'residencia', 'vacunatorio_preferencia',)
         widgets= {
             'username': forms.TextInput(
                 attrs={
@@ -165,13 +165,7 @@ class UpdateUsuarioForm(forms.ModelForm):
                     'class':'form-control',
                     'placeholder':'Ingrese su nuevo nombre de usuario'
                     }
-            ),
-            'historial_vacunacion': forms.TextInput(
-                attrs={
-                    'class':'form-control',
-                    'placeholder':'Ingrese su historial de vacunacion'
-                    }
-            ),           
+            ),         
             }
     def deshabilitarCampos(self, identidad):
         if identidad:
@@ -196,7 +190,6 @@ class UpdateUsuarioForm(forms.ModelForm):
         user.fecha_nacimiento= self.cleaned_data['fecha_nacimiento']
         user.residencia= self.cleaned_data['residencia']
         user.vacunatorio_preferencia= self.cleaned_data['vacunatorio_preferencia']
-        user.historial_vacunacion= self.cleaned_data['historial_vacunacion']
         user.save()
         return user
 
