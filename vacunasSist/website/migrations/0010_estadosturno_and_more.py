@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('website', '0008_turno'),
+        ('website', '0009_alter_turno_fecha.py'),
     ]
 
     operations = [
