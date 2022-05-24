@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('website', '0014_historial_vacunacion_and_more.py'),
+        ('website', '0016_remove_usuario_historial_vacunacion_and_more.py'),
     ]
 
     operations = [
