@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('website', '0012_merge_20220524_0311.py'),
+        ('website', '0012_rename_username_turno_user.py'),
     ]
 
     operations = [
