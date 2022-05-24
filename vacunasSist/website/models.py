@@ -82,3 +82,10 @@ class EstadosTurno(models.Model):
 class VacunaDeUsuario(models.Model):
     user= models.ForeignKey(Usuario, on_delete=models.CASCADE)
     vacuna= models.ForeignKey(Vacuna, on_delete=models.CASCADE)
+    
+class Historial_Vacunacion(models.Model):
+    fecha = models.DateField(null=False)
+    vacuna = models.CharField(max_length=20)
+    user = models.ForeignKey(Usuario,  on_delete=models.CASCADE, null= True)
+
+    REQUIRED_FIELDS = ['date','vacuna']
