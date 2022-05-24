@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('website', 0011_estadosturno_and_more.py'),
+        ('website', 0011_merge_20220524_0311.py'),
     ]
 
     operations = [
