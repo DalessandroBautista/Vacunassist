@@ -163,12 +163,15 @@ def solicitarTurno(request):
     # turno = Turno.objects.filter(vacuna="Covid-19").filter(username="Pappo")
         user = request.user
         info = ""
+        
         if (((date.today().year-user.fecha_nacimiento.year)>18) & (user.residencia=="La Plata")):
-           info = "Selecciona el turno a solicitar"
-           return render(request,"website/solicitar_turno.html",{
+            print('estoy en solicitar turno')
+            info = "Selecciona el turno a solicitar"
+            return render(request,"website/solicitar_turno.html",{
            "prueba": info,}) 
         else:
-            info = "No puede solicitar turnos por no tener validada la identidad o no ser residente de La Plata"
+            info="No puede solicitar turnos por no tener validada la identidad o no ser residente de La Plata"
+            messages.error(request,"No puede solicitar turnos por no tener validada la identidad o no ser residente de La Plata")
             return render(request, "website/index.html", {
             "prueba": info,})
         #  "test": Vacuna.objects.all().first()
@@ -179,11 +182,17 @@ def solicitarTurnoCovid(request):
     # turno = Turno.objects.filter(vacuna="Covid-19").filter(username="Pappo")
     ##model = Usuario
         user = request.user
-        if (((date.today().year-user.fecha_nacimiento.year)>18)):
+        turnos=Turno.objects.filter(user_id=user.id).filter(asignado=False)
+        yaTieneTurno=True
+        for turno in turnos:
+            if turno.vacuna=='Covid-19':
+                yaTieneTurno=False
+        if (((date.today().year-user.fecha_nacimiento.year)>18) and yaTieneTurno):
             t = Turno(user=request.user, vacuna="Covid-19")
             t.save()
             info = "Se ha solicitado un turno la para vacuna de Covid-19 exitosamente"
         else:
+            messages.error(request,"No puede solicitar turnos por no tener validada la identidad, no ser mayor de edad, no ser residente de La Plata o ya tener un turno asignado para esta vacuna")
             info = "No se ha podido solicitar un turno para la vacuna de Covid-19"
             print("Alerta de usuario no residente de La Plata o menor de 18 años")
         return render(request,"website/solicitar_turno.html",{"prueba": info}) 
@@ -193,10 +202,16 @@ def solicitarTurnoGripe(request):
     # Aca debe ir un "if !validoIdentidad & residencia=LP render lo de abajo"
     # turno = Turno.objects.filter(vacuna="Covid-19").filter(username="Pappo")dc  
         user = request.user
-        if ((date.today().year-user.fecha_nacimiento.year-user.fecha_nacimiento.year)>18 & (user.residencia=="La Plata")):
+        turnos=Turno.objects.filter(user_id=user.id).filter(asignado=False)
+        yaTieneTurno=True
+        for turno in turnos:
+            if turno.vacuna=='Gripe A':
+                yaTieneTurno=False
+        if ((date.today().year-user.fecha_nacimiento.year)>18 & (user.residencia=="La Plata") & yaTieneTurno):
             t = Turno(user=request.user, vacuna="Gripe A", asignado=True)
             t.save()
         else:
+            messages.error(request,"No puede solicitar turnos por no tener validada la identidad, no ser residente de La Plata o ya tener un turno asignado para esta vacuna")
             print("Alerta de usuario no residente de La Plata o menor de 18 años")
         return render(request,"website/solicitar_turno.html",{})
     # Sino mostrar alerta de  no validado o no tener residencia en LP
@@ -233,12 +248,15 @@ def verVacunasAplicadas(request):
     print(user_id)
     id_vacunas= VacunaDeUsuario.objects.filter(user_id=user_id)
     lista_vacunas=[]
+    print(id_vacunas)
     for vacuna in id_vacunas:
+    
         print(vacuna)
         lista_vacunas.append(Vacuna.objects.get(id=vacuna.vacuna_id))
         
     print(lista_vacunas)
-    if (lista_vacunas):
+    print(len(lista_vacunas))
+    if (len(lista_vacunas)>1):
         return render(request, 'website/ver_vacunas_aplicadas.html', {
             'lista_vacunas':lista_vacunas
         })
