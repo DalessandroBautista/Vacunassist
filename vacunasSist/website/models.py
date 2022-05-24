@@ -68,3 +68,11 @@ class Usuario(AbstractBaseUser):
     
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email','nombre', 'apellido','dni', 'fecha_nacimiento']
+    
+class Turno(models.Model):
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    vacuna = models.CharField(max_length=20)
+    fecha =  models.DateField(null=True)
+    asignado = models.BooleanField(default=False)
+
+#    Turno.objects.filter(estado=True).filter(user__id=request.user.id)    

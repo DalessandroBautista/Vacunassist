@@ -1,3 +1,4 @@
+from datetime import date
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
@@ -10,6 +11,9 @@ import random
 from django.urls import reverse
 from django.views.generic import View, TemplateView, ListView
 from django.contrib import messages
+from website.models import Vacuna
+from website.models import Turno
+from website.models import Usuario
 # Create your views here.
 
 """ 
@@ -151,3 +155,47 @@ def modificar_password(request):
         'password_form':password_form
     })
     
+def solicitarTurno(request):
+    # Aca debe ir un "if !validoIdentidad & residencia=LP render lo de abajo"
+    # turno = Turno.objects.filter(vacuna="Covid-19").filter(username="Pappo")
+        user = request.user
+        info = ""
+        if (((date.today().year-user.fecha_nacimiento.year)>18) & (user.residencia=="La Plata")):
+           info = "Selecciona el turno a solicitar"
+           return render(request,"website/solicitar_turno.html",{
+           "prueba": info,}) 
+        else:
+            info = "No puede solicitar turnos por no tener validada la identidad o no ser residente de La Plata"
+            return render(request, "website/index.html", {
+            "prueba": info,})
+        #  "test": Vacuna.objects.all().first()
+    # Sino mostrar alerta de  no validado o no tener residencia en LP
+
+def solicitarTurnoCovid(request):
+    # Aca debe ir un "if !validoIdentidad & residencia=LP render lo de abajo"
+    # turno = Turno.objects.filter(vacuna="Covid-19").filter(username="Pappo")
+    ##model = Usuario
+        user = request.user
+        if (((date.today().year-user.fecha_nacimiento.year)>18)):
+            t = Turno(user=request.user, vacuna="Covid-19")
+            t.save()
+            info = "Se ha solicitado un turno la para vacuna de Covid-19 exitosamente"
+        else:
+            info = "No se ha podido solicitar un turno para la vacuna de Covid-19"
+            print("Alerta de usuario no residente de La Plata o menor de 18 años")
+        return render(request,"website/solicitar_turno.html",{"prueba": info}) 
+    # Sino mostrar alerta de  no validado o no tener residencia en LP
+
+def solicitarTurnoGripe(request):
+    # Aca debe ir un "if !validoIdentidad & residencia=LP render lo de abajo"
+    # turno = Turno.objects.filter(vacuna="Covid-19").filter(username="Pappo")dc  
+        user = request.user
+        if ((date.today().year-user.fecha_nacimiento.year-user.fecha_nacimiento.year)>18 & (user.residencia=="La Plata")):
+            t = Turno(user=request.user, vacuna="Gripe A", asignado=True)
+            t.save()
+        else:
+            print("Alerta de usuario no residente de La Plata o menor de 18 años")
+        return render(request,"website/solicitar_turno.html",{})
+    # Sino mostrar alerta de  no validado o no tener residencia en LP
+    
+ 
