@@ -58,7 +58,6 @@ class Usuario(AbstractBaseUser):
     fecha_nacimiento= models.DateField(help_text="Fecha de nacimiento de la persona")
     residencia = models.TextField(help_text="Descripción de la tarea", null=True)
     vacunatorio_preferencia =models.ForeignKey(Vacunatorio, on_delete=models.CASCADE,null=True)
-    historial_vacunacion=models.CharField('Historial de vacunación', max_length=1000, null= True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     identidad_verificada=models.BooleanField(default=False)
     usuario_activo= models.BooleanField(default=True)
