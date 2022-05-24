@@ -33,6 +33,7 @@
                 </button>
                 <ul class="navbar-nav mr-auto mx-auto">
                     <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'index' %}">Inicio</a></li>
+                    <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'informacion_vacuna' %}">Vacunas</a></li>
                         {% if request.user.is_authenticated %}
                             <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'verPerfil' %}">Ver perfil</a></li>
                             {% if request.user.identidad_verificada  %} 
