@@ -1,0 +1,64 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+<div class="container">
+
+  <div class="row">
+    <div class="col">
+        <form action="" method="post" enctype=multipart/form-data>
+            {% csrf_token %}
+            <table>
+                <div class="row form-group">
+                    <div> {{ usuario_form.username.label }}</div>
+                    <div> {{ usuario_form.username }}</div>
+                </div>
+                <div class="row form-group">
+                    <div> {{ usuario_form.email.label }}</div>
+                    <div> {{ usuario_form.email }}</div>
+                </div>
+                <div class="row form-group">
+                    <div> {{ usuario_form.nombre.label }}</div>
+                    <div> {{ usuario_form.nombre }}</div>
+                </div>
+                <div class="row form-group">
+                    <div> {{ usuario_form.apellido.label }}</div>
+                    <div> {{ usuario_form.apellido }}</div>
+                </div>
+                <div class="row form-group">
+                    <div> {{ usuario_form.dni.label }}</div>
+                    <div> {{ usuario_form.dni }}</div>
+                </div>
+                <div class="row form-group">
+                    <div> {{ usuario_form.identidad_verificada.label }}</div>
+                    <div> {{ usuario_form.identidad_verificada }}</div>
+                </div>
+                <div class="row form-group">
+                    <div> {{ usuario_form.fecha_nacimiento.label }}</div>
+                    <div> {{ usuario_form.fecha_nacimiento }}</div>
+                </div>
+                <div class="row form-group">
+                    <div> {{ usuario_form.residencia.label }}</div>
+                    <div> {{ usuario_form.residencia }}</div>
+                </div>
+                <div class="row form-group">
+                    <div> {{ usuario_form.vacunatorio_preferencia.label }}</div>
+                    <div> {{ usuario_form.vacunatorio_preferencia }}</div>
+                </div>
+                <div class="row form-group">
+                    <div> {{ usuario_form.historial_vacunacion.label }}</div>
+                    <div> {{ usuario_form.historial_vacunacion }}</div>
+                </div>
+                <div class="row form-group">
+                    <input  class="btn btn-outline-success"  type="submit" value="Editar" style="width: 150px;">
+                    <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'modificar_password' %}">Modificar contraseña</a></div>
+                </div>
+            </table>
+        </form>
+    </div>
+        
+    </div>
+  </div>
+
+</div>
+
+ {% endblock %}

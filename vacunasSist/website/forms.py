@@ -40,10 +40,11 @@ class FormularioUsuario(forms.ModelForm):
             'required': 'required'
         }
         ))
+   
     
     class Meta:
         model= Usuario
-        fields=('username', 'email', 'nombre', 'apellido', 'dni', 'fecha_nacimiento')
+        fields=('username', 'email', 'nombre', 'apellido', 'dni', 'fecha_nacimiento', 'identidad_verificada')
         widgets= {
             'username': forms.TextInput(
                 attrs={
@@ -80,7 +81,12 @@ class FormularioUsuario(forms.ModelForm):
                     'class':'form-control',
                     'placeholder':'Ingrese su fecha de nacimiento'
                     }
-            )
+            ),
+            'identidad_verificada': forms.CheckboxInput(   
+                attrs={
+                    'placeholder':'Cliquee el botón si desea verificar su identidad'
+                    }
+            ),
         }
     def clean_password2(self):
         """ Validación de Contraseña
@@ -102,14 +108,163 @@ class FormularioUsuario(forms.ModelForm):
             user.save()
         return user
     
-class FormularioDatosDePerfil(forms.ModelForm):
+class UpdateUsuarioForm(forms.ModelForm):
     class Meta:
         model= Usuario
-        fields=('username', 'email', 'nombre', 'apellido', 'dni', 'fecha_nacimiento', 'residencia', 'vacunatorio_preferencia', 'historial_vacunacion')
+        fields=('username', 'email', 'nombre', 'apellido', 'dni', 'identidad_verificada', 'fecha_nacimiento', 'residencia', 'vacunatorio_preferencia', 'historial_vacunacion' )
         widgets= {
             'username': forms.TextInput(
                 attrs={
                     'class':'form-control',
                     'placeholder':'Ingrese su nombre de usuario'
                     }
-            )}
+            ),
+            'email': forms.EmailInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su email'
+                    }
+            ),
+            'nombre': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su nombre'
+                    }
+            ),
+            'apellido': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su apellido'
+                    }
+            ),
+            'dni': forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su DNI'
+                    }
+            ),
+             'identidad_verificada': forms.CheckboxInput(   
+                attrs={
+                    'placeholder':'Cliquee el botón si desea verificar su identidad'
+                    }
+            ),
+            'fecha_nacimiento': forms.DateInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su fecha de nacimiento'
+                    }
+            ),
+            'residencia': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su ciudad de residencia'
+                    }
+            ),
+            'vacunatorio': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su nuevo nombre de usuario'
+                    }
+            ),
+            'historial_vacunacion': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su historial de vacunacion'
+                    }
+            ),           
+            }
+    def deshabilitarCampos(self, identidad):
+        if identidad:
+            print(' if verificado')
+            #self.fields['identidad_verificada','dni','email','fecha_nacimiento','nombre','apellido'].widget.attrs.update({'disabled': True})
+            self.fields['identidad_verificada'].widget.attrs.update({'disabled': True})
+            self.fields['dni'].widget.attrs.update({'readonly': True})
+            self.fields['email'].widget.attrs.update({'readonly': True})
+            self.fields['fecha_nacimiento'].widget.attrs.update({'readonly': True})
+            self.fields['nombre'].widget.attrs.update({'readonly': True})
+            self.fields['apellido'].widget.attrs.update({'readonly': True})
+            #self.fields['nombre'].disabled = True
+        return self
+    def save(self):
+        user = self.instance
+        user.username= self.cleaned_data['username']
+        user.email= self.cleaned_data['email']
+        user.nombre= self.cleaned_data['nombre']
+        user.apellido = self.cleaned_data['apellido']
+        user.dni= self.cleaned_data['dni']
+        user.identidad_verificada= self.cleaned_data['identidad_verificada']
+        user.fecha_nacimiento= self.cleaned_data['fecha_nacimiento']
+        user.residencia= self.cleaned_data['residencia']
+        user.vacunatorio_preferencia= self.cleaned_data['vacunatorio_preferencia']
+        user.historial_vacunacion= self.cleaned_data['historial_vacunacion']
+        user.save()
+        return user
+
+
+class UpdatePasswordForm(forms.ModelForm):
+    password2= forms.CharField(label="Verificacion de contraseña", widget= forms.PasswordInput(
+        attrs={
+            'class':'form-control',
+            'placeholder':'Repita su contraseña',
+            'required': 'required'
+        }
+        ))
+                                   
+    class Meta:
+        model= Usuario
+        fields=('password',)
+        widgets= {
+            'password': forms.PasswordInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su nueva contraseña'
+                    }
+            ),
+            'password2': forms.PasswordInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Repita su nueva contraseña'
+                    }
+            )       
+        }
+        
+        def clean_password2(self):
+            password1 = self.cleaned_data.get('password1')
+            password2 = self.cleaned_data.get('password2')
+            if password1 != password2:
+                raise forms.ValidationError('Contraseñas no coinciden!')
+            return password2
+        
+        def save(self, user):
+            print(user)
+            password = self.cleaned_data.get('password')
+            user.set_password('password')
+            user.save()
+            return user
+        
+                
+class FormularioEmail(forms.ModelForm):
+    password1= forms.CharField(label="Contraseña")
+    class Meta:
+        model= Usuario
+        fields=('email',)
+        widgets= {
+            'email': forms.EmailInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su email'
+                    }
+            )
+        }
+    def save(self,commit = True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password1'])
+        if commit:
+            user.save()
+        return user
+    def save(self):
+        user= self.instance
+        user.set_password(self.cleaned_data['password1'])
+        user.save()
+        return user
+

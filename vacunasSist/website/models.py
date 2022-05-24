@@ -61,6 +61,7 @@ class Usuario(AbstractBaseUser):
     vacunatorio_preferencia =models.ForeignKey(Vacunatorio, on_delete=models.CASCADE,null=True)
     historial_vacunacion=models.CharField('Historial de vacunación', max_length=1000, null= True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+    identidad_verificada=models.BooleanField(default=False)
     usuario_activo= models.BooleanField(default=True)
     usuario_administrador = models.BooleanField(default=False)
     objects= UsuarioManager()
