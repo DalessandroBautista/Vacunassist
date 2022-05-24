@@ -15,7 +15,9 @@ urlpatterns = [
     path('logout', LogoutView.as_view(template_name="website/registration/logged_out.html"), name="logout"),
     path('password_reset', views.password_reset, name="password_reset"),
     path('modificar_password', views.modificar_password, name="modificar_password"),
-
+    path('solicitar_turno',views.solicitarTurno, name="solicitar_turno"),
+    path('solicitar_turno_covid',views.solicitarTurnoCovid, name="solicitar_turno_covid"),
+    path('solicitar_turno_gripe',views.solicitarTurnoGripe, name="solicitar_turno_gripe"),
 
 
 ]
