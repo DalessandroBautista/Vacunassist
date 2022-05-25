@@ -15,7 +15,7 @@ class LoginForm(forms.Form):
         label='Usuario', widget=forms.TextInput(attrs={'class': 'usuario'}), max_length=150, required=True, )
     password = forms.CharField(
         label='Password', widget=forms.PasswordInput(), max_length=30, required=True, )
-
+    
 class FormularioLogin(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(FormularioLogin, self).__init__(*args,**kwargs)
@@ -179,7 +179,12 @@ class UpdateUsuarioForm(forms.ModelForm):
             self.fields['apellido'].widget.attrs.update({'readonly': True})
             #self.fields['nombre'].disabled = True
         return self
-    def save(self):
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        #user.set_password(self.cleaned_data['password1'])
+        if commit:
+            user.save()
+        """
         user = self.instance
         user.username= self.cleaned_data['username']
         user.email= self.cleaned_data['email']
@@ -191,10 +196,18 @@ class UpdateUsuarioForm(forms.ModelForm):
         user.residencia= self.cleaned_data['residencia']
         user.vacunatorio_preferencia= self.cleaned_data['vacunatorio_preferencia']
         user.save()
+        """
         return user
 
 
 class UpdatePasswordForm(forms.ModelForm):
+    oldpassword= forms.CharField(label="Verificacion de contraseña", widget= forms.PasswordInput(
+        attrs={
+            'class':'form-control',
+            'placeholder':'Ingrese su contraseña actual',
+            'required': 'required'
+        }
+        ))
     password2= forms.CharField(label="Verificacion de contraseña", widget= forms.PasswordInput(
         attrs={
             'class':'form-control',
@@ -218,7 +231,14 @@ class UpdatePasswordForm(forms.ModelForm):
                     'class':'form-control',
                     'placeholder':'Repita su nueva contraseña'
                     }
-            )       
+            ),
+            'oldpassword': forms.PasswordInput(
+                attrs={
+                'class':'form-control',
+                'placeholder':'Ingrese su contraseña actual',
+                'required': 'required'
+        }
+        )      
         }
         
         def clean_password2(self):
@@ -231,7 +251,6 @@ class UpdatePasswordForm(forms.ModelForm):
         
                 
 class FormularioEmail(forms.ModelForm):
-    password1= forms.CharField(label="Contraseña")
     class Meta:
         model= Usuario
         fields=('email',)
@@ -243,9 +262,9 @@ class FormularioEmail(forms.ModelForm):
                     }
             )
         }
-    def save(self,commit = True):
+    def save(self,user, password1,commit = True, ):
         user = super().save(commit=False)
-        user.set_password(self.cleaned_data['password1'])
+        user.set_password(password1)
         if commit:
             user.save()
         return user

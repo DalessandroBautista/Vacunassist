@@ -7,3 +7,8 @@ INSERT INTO website_vacuna(nombre,informacion)
     VALUES  ('Gripe A','La vacuna contra la gripe, también conocida como vacuna contra la influenza o vacuna antigripal, es una vacuna anual para proteger del virus altamente mutable de la gripe. Por su alta mutabilidad, la vacuna debe comenzar a desarrollarse mucho antes de saberse la cepa o cepas concretas mayoritarias el siguiente invierno, de ahí su relativamente baja eficacia.'), 
             ('Fiebre Amarilla','La vacuna contra la fiebre amarilla es una vacuna que protege contra la fiebre amarilla.​ La fiebre amarilla es una infección viral que se presenta en África y América del Sur. La mayoría de las personas comienzan a desarrollar inmunidad dentro de diez días y el 99% está protegido dentro de un mes de la vacunación, y esto parece durar toda la vida. La vacuna se puede utilizar para controlar los brotes de la enfermedad. Se administra por inyección en un músculo o justo debajo de la piel.'),
             ('Covid-19','Las vacunas contra la COVID-19 comprenden al conjunto de vacunas que tratan de prevenir la enfermedad provocada por el SARS-CoV-2, virus responsable de la pandemia de coronavirus de 2019-2022.');
+
+INSERT INTO website_vacunadeusuario(user_id,vacuna_id)
+    VALUES  ('1','1'), 
+            ('2','2'),
+            ('1','2');

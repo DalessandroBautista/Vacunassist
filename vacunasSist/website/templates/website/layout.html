@@ -27,20 +27,23 @@
                     </li>
                 </ul>
             </div>
-            <div class="mx-auto w-100 order-0">
+            <div class="mx-auto w-100 ">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <ul class="navbar-nav mr-auto mx-auto">
-                    <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'index' %}">Inicio</a></li>
-                    <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'informacion_vacuna' %}">Vacunas</a></li>
+                    <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'index' %}">Inicio</a></li>
+                    <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'informacion_vacuna' %}">Vacunas</a></li>
                         {% if request.user.is_authenticated %}
-                            <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'verPerfil' %}">Ver perfil</a></li>
+                            <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'verPerfil' %}">Ver perfil</a></li>
                             {% if request.user.identidad_verificada  %} 
-                                <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'solicitar_turno' %}">Solicitar turno</a></li>
-                                <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'ver_turnos' %}">Ver turnos</a></li>
-                                <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'ver_turnos_pendientes' %}">Ver turnos pendientes</a></li>
-                                <li class="nav-item"><a class="navbar-brand mx-8" style="color:white" href="{% url 'ver_vacunas_aplicadas' %}">Ver vacunas aplicadas</a></li>
+                                <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'solicitar_turno' %}">Solicitar turno</a></li>
+                                <a class="nav-item navbar-brand mx-8 dropdown-toggle" id="navbarDropdown" style="color:white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Ver turnos</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_turnos' %}">Ver turnos aceptados</a></li>
+                                    <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_turnos_pendientes' %}">Ver turnos pendientes</a></li>
+                                </ul>
+                                <li class="nav-item"><a class="navbar-brand" style="color:white" href="{% url 'ver_vacunas_aplicadas' %}">Ver vacunas aplicadas</a></li>
                             {% endif %}
                         {% endif %}
                 </ul>

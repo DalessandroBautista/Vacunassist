@@ -1,8 +1,9 @@
-from datetime import date, timedelta
+from datetime import date
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login as auth_login
 from django.contrib.auth.models import User, auth
 from .forms import *
 from django.core.mail import send_mail
@@ -51,9 +52,26 @@ def registrarse(request):
 
 def login(request):
     if request.method=="POST":
-        form=FormularioLogin(request.POST)
-        username=request.POST.get("username")
-        password=request.POST.get("password")
+        try:
+            form=FormularioLogin(request.POST)
+            username=request.POST.get("username")
+            password=request.POST.get("password")
+            user = auth.authenticate(username=username, password=password)
+            usuario = Usuario.objects.get(username=username)
+            pass_user= usuario.password
+            print('usuario')
+            print(user)
+            if (user is not None):
+                print('user valido')
+                auth_login(request, user)
+                return render(request, "website/index.html")
+            else:
+                form=LoginForm()
+                messages.error(request,"El usuario o la contraseña son incorrectos")
+                return render(request, "website/registration/login.html",{"form": form})
+        except Exception as e: 
+            print(repr(e))    
+        """
         try:
             user = Usuario.objects.get(username=username)
             print(password)
@@ -62,7 +80,7 @@ def login(request):
             print(user.username)
             try:
                 auth.login(request, user)
-                return render(request, "website/index.html")
+               
             except:
                 print(errors)
                 form=LoginForm()
@@ -71,10 +89,12 @@ def login(request):
         except Usuario.DoesNotExist:
             if form.is_valid():
                 print('valido')
-
+     """
+    
     else:
         form=LoginForm()
-
+        print('no es un post')
+   
     return render(request, "website/registration/login.html",{
         "form": form,
     })
@@ -87,21 +107,27 @@ def logout(request):
 def password_reset(request):
     if request.method == 'POST':
         form = FormularioEmail(request.POST)
-        mail=request.POST.get("email")
-        usuario= Usuario.objects.get(email=mail)
-        clave_nueva=random.randint(100000,999999)
-        message="Tu nueva contraseña es: " + str(clave_nueva) + ". Por favor, al ingresar, modifica tu clave desde 'Ver mi perfil/ Modificar contraseña'."
-        usuario.password=clave_nueva
-        usuario.save()
-        send_mail(
-           'VacunasSist - Recuperación de contraseña',
-            message,
-            'vacunassist2022@gmail.com',
-            [mail],
-            fail_silently=False
-        )
-        messages.success(request, "Te hemos enviado tu nueva clave al email ingresado.")   
-        return HttpResponseRedirect(reverse('login'))
+        email=request.POST.get("email")
+        try:
+            usuario= Usuario.objects.get(email=email)
+            clave_nueva=str(random.randint(100000,999999))
+            usuario.set_password(clave_nueva)
+            print(clave_nueva)
+            message="Tu nueva contraseña es: " + str(clave_nueva) + ". Por favor, al ingresar, modifica tu clave desde 'Ver mi perfil/ Modificar contraseña'."
+            usuario.save()
+            send_mail(
+                'VacunasSist - Recuperación de contraseña',
+                message,
+                'vacunassist2022@gmail.com',
+                [email],
+                fail_silently=False
+            )
+            messages.success(request, "Te hemos enviado tu nueva clave al email ingresado.")
+            return HttpResponseRedirect(reverse('login'))   
+        except Exception as e: 
+            print(repr(e))
+            messages.error(request, "El email ingresado no se encuentra registrado en nuestro sistema.")
+        
     else:
         form = FormularioEmail()
     return render(request, 'website/registration/password_reset_form.html', {
@@ -110,169 +136,208 @@ def password_reset(request):
     
 def verPerfil(request):
     id_usuario=request.user.id
-    usuario= Usuario.objects.get(id=id_usuario)
-    if request.method=="POST":
-        print('entre al post y creo form')
-        usuario_form =UpdateUsuarioForm(request.POST, instance = usuario)
-        if usuario_form.is_valid():
-            usuario_form.save()
-            messages.success(request, 'Perfil actualizado correctamente')
-            return redirect('index')
-    else:
-        print('no entre al post y creo form')
-        usuario_form=UpdateUsuarioForm(instance = usuario)
-        print('form')
-        usuario_form=usuario_form.deshabilitarCampos(usuario.identidad_verificada)
+    try:
+        usuario= Usuario.objects.get(id=id_usuario)
+        if request.method=="POST":
+            print('entre al post y creo form')
+            usuario_form =UpdateUsuarioForm(request.POST, instance = usuario)
+            if usuario_form.is_valid():
+                try:
+                    usuario_form.save()
+                    print('en guardar datos')
+                    messages.success(request, 'Perfil actualizado correctamente')
+                    return redirect('index')
+                except Exception as e: 
+                    print(repr(e))
+                    messages.error(request, 'Su perfil no se ha actualizado.')
+        else:
+            print('no entre al post y creo form')
+            usuario_form=UpdateUsuarioForm(instance = usuario)
+            print('form')
+            usuario_form=usuario_form.deshabilitarCampos(usuario.identidad_verificada)
 
-    return render(request, "website/verPerfil.html",{ 'usuario_form':usuario_form})
+        return render(request, "website/verPerfil.html",{ 'usuario_form':usuario_form})
+    except Exception as e: 
+            print(repr(e))
 
 def modificar_password(request):
-    id_usuario=request.user.id
-    usuario= Usuario.objects.get(id=id_usuario)
-    if request.method=="POST":
-        print('entre al post y creo form')
-        print(usuario.residencia)
-        password_form =UpdatePasswordForm(request.POST)
-        password_form.is_valid()
-        print(password_form.errors)
-        if True:
-            print('post a validar')
-            mail=usuario.email
-            clave_nueva=request.POST.get("password")
-            usuario.set_password(clave_nueva)
-            usuario.save()
-            print(clave_nueva)
-            message="Tu nueva contraseña es: " + str(clave_nueva)
-            send_mail(
-                'VacunasSist - Nueva contraseña',
-                message,
-                'vacunassist2022@gmail.com',
-                [mail],
-                fail_silently=False
-            )
-            messages.success(request, "Hemos modificado tu clave y te la enviamos a tu email.")   
-        return HttpResponseRedirect(reverse('index'))
-    else:
-        password_form=UpdatePasswordForm() 
-    return render(request, 'website/modificar_password.html', {
-        'password_form':password_form
-    })
+    try:
+        id_usuario=request.user.id
+        usuario= Usuario.objects.get(id=id_usuario)
+        if request.method=="POST":
+            print('entre al post y creo form')
+            print(usuario.residencia)
+            password_form =UpdatePasswordForm(request.POST)
+            password_form.is_valid()
+            print(password_form.errors)
+            if True:
+                print('post a validar')
+                mail=usuario.email
+                clave_nueva=request.POST.get("password")
+                usuario.set_password(clave_nueva)
+                usuario.save()
+                print(clave_nueva)
+                message="Tu nueva contraseña es: " + str(clave_nueva)
+                send_mail(
+                    'VacunasSist - Nueva contraseña',
+                    message,
+                    'vacunassist2022@gmail.com',
+                    [mail],
+                    fail_silently=False
+                )
+                messages.success(request, "Hemos modificado tu clave y te la enviamos a tu email.")   
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            password_form=UpdatePasswordForm() 
+        return render(request, 'website/modificar_password.html', {
+            'password_form':password_form
+        })
+    except Exception as e: 
+        print(repr(e))
     
 def solicitarTurno(request):
     # Aca debe ir un "if !validoIdentidad & residencia=LP render lo de abajo"
     # turno = Turno.objects.filter(vacuna="Covid-19").filter(username="Pappo")
         user = request.user
         info = ""
-        if ((user.residencia=="La Plata")):
-           info = "Selecciona el turno a solicitar"
-           return render(request,"website/solicitar_turno.html",{
+        
+        if (((date.today().year-user.fecha_nacimiento.year)>18) & (user.residencia=="La Plata")):
+            print('estoy en solicitar turno')
+            info = "Selecciona el turno a solicitar"
+            return render(request,"website/solicitar_turno.html",{
            "prueba": info,}) 
         else:
-            info = "No se puede solicitar turnos por no ser residente de La Plata"
+            info="No puede solicitar turnos por no tener validada la identidad o no ser residente de La Plata"
+            messages.error(request,"No puede solicitar turnos por no tener validada la identidad o no ser residente de La Plata")
             return render(request, "website/index.html", {
             "prueba": info,})
         #  "test": Vacuna.objects.all().first()
     # Sino mostrar alerta de  no validado o no tener residencia en LP
 
 def solicitarTurnoCovid(request):
-    # Aca debe ir un "if !validoIdentidad & residencia=LP render lo de abajo"
+    try:
         user = request.user
-        turno = Turno.objects.filter(vacuna="Covid-19").filter(user=user).filter(asignado=False).exists()
-        info = ""
-        if (turno):
-            info = "No se puede solicitar un turno de vacuna Covid-19 por ya tener uno solicitado"
-        elif (((date.today().year-user.fecha_nacimiento.year)>18)):
+        turnos=Turno.objects.filter(user_id=user.id).filter(vacuna='Covid-19')
+        print(not turnos)
+        if ((((date.today().year-user.fecha_nacimiento.year)>18) &  (not turnos)) &  (user.residencia=="La Plata") ):
             t = Turno(user=request.user, vacuna="Covid-19")
             t.save()
+            messages.success(request,"Se ha solicitado un turno la para vacuna de Covid-19 exitosamente")
             info = "Se ha solicitado un turno la para vacuna de Covid-19 exitosamente"
+        elif (turnos):
+            messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
+            print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
+        elif(not ((date.today().year-user.fecha_nacimiento.year)>18)):
+            messages.error(request,"No puede solicitar un turno para esta vacuna por no ser mayor de edad")
+            print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
         else:
-            info = "No se ha podido solicitar un turno para la vacuna de Covid-19 por ser menor de 18 años"
-        return render(request,"website/solicitar_turno.html",{"prueba": info}) 
+            messages.error(request,"No puede solicitar turnos por no ser residente de La Plata")
+            print("No puede solicitar turnos por no ser residente de La Plata")
+        return render(request,"website/solicitar_turno.html",{})
     # Sino mostrar alerta de  no validado o no tener residencia en LP
+    except Exception as e: 
+        print(repr(e))
 
 def solicitarTurnoGripe(request):
     # Aca debe ir un "if !validoIdentidad & residencia=LP render lo de abajo"
     # turno = Turno.objects.filter(vacuna="Covid-19").filter(username="Pappo")dc  
+    try:
         user = request.user
-        toYearAgo = date.today()-timedelta(365)
-        seVacuno = Historial_Vacunacion.objects.filter(vacuna="Gripe A").filter(user=user).filter(fecha__gte=toYearAgo, fecha__lte=date.today()).exists()
-        turno = Turno.objects.filter(vacuna="Gripe A").filter(user=user).filter(asignado=False).exists()
-        info = ""
-        if (turno):
-            info = "No se puede solicitar un turno de vacuna Gripe A por ya tener uno solicitado"
-        elif not (seVacuno):
+        turnos=Turno.objects.filter(user_id=user.id).filter(vacuna="Gripe A") 
+        print(not turnos)
+        if ((not turnos) &  (user.residencia=="La Plata") ):
+            messages.success(request,"Se ha solicitado un turno la para vacuna de la Gripe A exitosamente")
             t = Turno(user=request.user, vacuna="Gripe A")
             t.save()
-            info = "Se ha solicitado un turno la para vacuna de Gripe A exitosamente"
+        elif (turnos):
+            messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
+            print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
         else:
-            info = "No se ha podido solicitar un turno para la vacuna de Gripe A por haberse vacunado hace menos de un año"
-        return render(request,"website/solicitar_turno.html",{"prueba": info})
+            messages.error(request,"No puede solicitar turnos por no ser residente de La Plata")
+            print("No puede solicitar turnos por no ser residente de La Plata")
+        return render(request,"website/solicitar_turno.html",{})
     # Sino mostrar alerta de  no validado o no tener residencia en LP
+    except Exception as e: 
+        print(repr(e))
     
  
 def verTurnos(request):
-    user_id = request.user.id
-    lista_turnos= Turno.objects.filter(user_id=user_id).filter(asignado=True)
-    print(lista_turnos)
-    if (lista_turnos):
-        return render(request, 'website/ver_turnos.html', {
-            'lista_turnos':lista_turnos
-        })
-    else:
-        messages.error(request, 'Usted no tiene turnos aceptados ')
-        return render(request, 'website/index.html',{})
+    try:
+        user_id = request.user.id
+        lista_turnos= Turno.objects.filter(user_id=user_id).filter(asignado=True)
+        print(lista_turnos)
+        if (lista_turnos):
+            return render(request, 'website/ver_turnos.html', {
+                'lista_turnos':lista_turnos
+            })
+        else:
+            messages.error(request, 'Usted no tiene turnos aceptados ')
+            return render(request, 'website/index.html',{})
+    except Exception as e: 
+        print(repr(e))
 
 
 def verTurnosPendientes(request):
-    user_id = request.user.id
-    lista_turnos= Turno.objects.filter(user_id=user_id).filter(asignado=False)
-    print(lista_turnos)
-    if (lista_turnos):
-        return render(request, 'website/ver_turnos_pendientes.html', {
-            'lista_turnos':lista_turnos
-        })
-    else:
-        messages.error(request, 'Usted no tiene turnos pendientes')
-        return render(request, 'website/index.html',{})
-    
+    try:
+        user_id = request.user.id
+        lista_turnos= Turno.objects.filter(user_id=user_id).filter(asignado=False)
+        print(lista_turnos)
+        if (lista_turnos):
+            return render(request, 'website/ver_turnos_pendientes.html', {
+                'lista_turnos':lista_turnos
+            })
+        else:
+            messages.error(request, 'Usted no tiene turnos pendientes')
+            return render(request, 'website/index.html',{})
+    except Exception as e: 
+        print(repr(e))
 
 def verVacunasAplicadas(request):
-    user_id = request.user.id
-    print(user_id)
-    id_vacunas= VacunaDeUsuario.objects.filter(user_id=user_id)
-    lista_vacunas=[]
-    print(id_vacunas)
-    for vacuna in id_vacunas:
-    
-        print(vacuna)
-        lista_vacunas.append(Vacuna.objects.get(id=vacuna.vacuna_id))
+    try:
+        user_id = request.user.id
+        print(user_id)
+        id_vacunas= VacunaDeUsuario.objects.filter(user_id=user_id)
+        lista_vacunas=[]
+        print(id_vacunas)
+        for vacuna in id_vacunas:
         
-    print(lista_vacunas)
-    print(len(lista_vacunas))
-    if (len(lista_vacunas)>1):
-        return render(request, 'website/ver_vacunas_aplicadas.html', {
-            'lista_vacunas':lista_vacunas
-        })
-    else:
-        messages.error(request, 'Usted no tiene vacunas aplicadas')
-        return render(request, 'website/index.html',{})
+            print(vacuna)
+            lista_vacunas.append(Vacuna.objects.get(id=vacuna.vacuna_id))
+            
+        print(lista_vacunas)
+        print(len(lista_vacunas))
+        if (len(lista_vacunas)>1):
+            return render(request, 'website/ver_vacunas_aplicadas.html', {
+                'lista_vacunas':lista_vacunas
+            })
+        else:
+            messages.error(request, 'Usted no tiene vacunas aplicadas')
+            return render(request, 'website/index.html',{})
+    except Exception as e: 
+        print(repr(e))
     
 def obtenerCertificado(request, vacuna_id):
-    vacuna=Vacuna.objects.get(id=vacuna_id)
-    buffer = io.BytesIO()
+    try:
+        vacuna=Vacuna.objects.get(id=vacuna_id)
+        buffer = io.BytesIO()
 
-    p = canvas.Canvas(buffer)
+        p = canvas.Canvas(buffer)
 
-    mensaje= "Este documento certifica que usted se vacunó para: " + vacuna.nombre
-    p.drawString(20, 20, mensaje)
+        mensaje= "Este documento certifica que usted se vacunó para: " + vacuna.nombre
+        p.drawString(20, 20, mensaje)
 
-    p.showPage()
-    p.save()
+        p.showPage()
+        p.save()
 
 
-    buffer.seek(0)
-    return FileResponse(buffer, as_attachment=True, filename='certificado.pdf')
-    
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename='certificado.pdf')
+    except Exception as e: 
+        print(repr(e))
+
 def verInformacion(request):
-    list_vacunas= Vacuna.objects.all()
-    return render(request, 'website/informacion_vacuna.html', {'list_vacunas': list_vacunas })
+    try:
+        list_vacunas= Vacuna.objects.all()
+        return render(request, 'website/informacion_vacuna.html', {'list_vacunas': list_vacunas })
+    except Exception as e: 
+        print(repr(e))
