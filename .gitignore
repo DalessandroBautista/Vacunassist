@@ -1,3 +1,4 @@
 .vscode
 vacunasSist/website/__pycache__/
-migrations/
+vacunasSist/website/migrations/
+vacunasSist/vacunasSist/__pycache__/
