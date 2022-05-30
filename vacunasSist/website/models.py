@@ -21,7 +21,8 @@ class Vacuna(models.Model):
 class Vacunatorio(models.Model):
     nombre=models.CharField(max_length=40)
     ubicacion=models.CharField(max_length=40)
-    
+    def __str__(self):
+       return self.nombre + self.ubicacion
 """ acá podemos hacer modelo de persona y que usuario admin y vacunador hereden lo básico"""
 
 class UsuarioManager(BaseUserManager):
