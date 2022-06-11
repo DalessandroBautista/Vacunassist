@@ -67,6 +67,15 @@ class Usuario(AbstractBaseUser):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email','nombre', 'apellido','dni', 'fecha_nacimiento']
     
+class UsuarioConPrivilegios(AbstractBaseUser):
+    username =models.CharField('Nombre de usuario', unique=True, max_length=100)
+    email = models.EmailField('Correo electrónico', max_length=254, unique=True)
+    nombre = models.CharField('Nombre', max_length=254)
+    apellido = models.CharField('apellido', max_length=254)
+    es_vacunador = models.BooleanField(default=False)
+    es_administrador = models.BooleanField(default=False)
+    dni=models.IntegerField(help_text="DNI de la persona", unique=True)
+    
 class Turno(models.Model):
     user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     vacuna = models.CharField(max_length=20)

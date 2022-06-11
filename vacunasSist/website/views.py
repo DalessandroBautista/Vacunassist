@@ -70,7 +70,28 @@ def login(request):
                 messages.error(request,"El usuario o la contraseña son incorrectos")
                 return render(request, "website/registration/login.html",{"form": form})
         except Exception as e: 
-            print(repr(e))    
+            print(repr(e))  
+        
+        try:
+            
+            form=FormularioLogin(request.POST)
+            username=request.POST.get("username")
+            password=request.POST.get("password")
+            user = auth.authenticate(username=username, password=password)
+            usuario = UsuarioConPrivilegios.objects.get(username=username)
+            pass_user= usuario.password
+            print('usuario')
+            print(user)
+            if (user is not None):
+                print('user valido')
+                auth_login(request, user)
+                return render(request, "website/index.html")
+            else:
+                form=LoginForm()
+                messages.error(request,"El usuario o la contraseña son incorrectos")
+                return render(request, "website/registration/login.html",{"form": form})
+        except Exception as e: 
+            print(repr(e))   
         """
         try:
             user = Usuario.objects.get(username=username)
