@@ -1,8 +1,28 @@
 {% extends "website/layout.html" %}
 {% block body %}
 {% for vacuna in  list_vacunas%}
-    <h4>{{ vacuna.nombre }}</h4>
-    <p> {{vacuna.informacion }}</p>
+    <h4 style= "text-align: center">{{ vacuna.nombre }}</h4>
+   {% if vacuna.nombre == 'Covid-19' %}
+       <div class="container">
+          <p data-aos="fade-left" style="text-align: right" align="right"> {{vacuna.informacion }}</p>
+         <img width="800" height="200"  src="\static\img\coronavirus-vacuna-placa-web.png">
+       </div>
+   {% endif %}
+     <br>
+    {% if vacuna.nombre == 'Fiebre Amarilla' %}
+       <div class="container">
+        <p data-aos="fade-left" style= "text-align: left" align="left"> {{vacuna.informacion }}</p>
+         <img width="500" height="300" float="left"  src="\static\img\fiebre.png">
+       </div>
+   {% endif %}
+     <br>
+{% if vacuna.nombre == 'Gripe A' %}
+       <div class="container">
+        <p data-aos="fade-left" style= "text-align: left" align="left"> {{vacuna.informacion }}</p>
+         <img width="500" height="200" style="text-align: right" align="right" src="\static\img\Gripe.jpg">
+       </div>
+    </p>
+   {% endif %}
     <br>
 {% endfor %}
 {% endblock %}
