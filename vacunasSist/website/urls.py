@@ -17,6 +17,7 @@ urlpatterns = [
     path('modificar_password', views.modificar_password, name="modificar_password"),
     path('solicitar_turno',views.solicitarTurno, name="solicitar_turno"),
     path('solicitar_turno_covid',views.solicitarTurnoCovid, name="solicitar_turno_covid"),
+    path('solicitar_turno_covid2',views.solicitarTurnoCovid2, name="solicitar_turno_covid2"),
     path('solicitar_turno_gripe',views.solicitarTurnoGripe, name="solicitar_turno_gripe"),
     path('ver_turnos_pendientes',views.verTurnosPendientes, name="ver_turnos_pendientes"),
     path('ver_turnos',views.verTurnos, name="ver_turnos"),
@@ -24,4 +25,8 @@ urlpatterns = [
     path('certificado/<int:vacuna_id>/',views.obtenerCertificado, name="certificado"),
     path('informacion_vacuna', views.verInformacion, name="informacion_vacuna"),
     path('requisitos_vacunas', views.verRequisitos, name="requisitos_vacunas"),
+    path('cargar_vacuna', views.cargarVacuna, name="cargar_vacuna"),
+    path('ver_historial_vacunacion',views.verHistorialVacunacion, name="ver_historial_vacunacion"),
+    path('eliminar_vacuna_usuario/<int:historial_vacuna_id>/',views.EliminarVacunaUsuario, name="eliminar_vacuna_usuario"),
+    path('cancelar_turno_usuario/<int:turno_id>/',views.CancelarTurnoUsuario, name="cancelar_turno_usuario"),
 ]

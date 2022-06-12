@@ -14,6 +14,7 @@
                         <div class="card-body p-4">
                             <div class="text-center">
                                 <h5 class="fw-bolder">{{ un_turno.vacuna }}</h5>
+                                <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'cancelar_turno_usuario' un_turno.id %}">Cancelar turno</a></div>
                             </div>
                         </div>
                     </div>

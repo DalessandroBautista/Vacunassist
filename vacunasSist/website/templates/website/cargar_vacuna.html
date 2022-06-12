@@ -6,7 +6,7 @@
     <form method="post">
         <div class="form-group">
           {% csrf_token %}
-          {% for campo in usuario_form %}
+          {% for campo in cargar_vacuna_form %}
             <p>
               {{ campo.label_tag }}<br>
               {{ campo }}
@@ -19,10 +19,8 @@
             </p>
           {% endfor %}
           <div class="row form-group">
-            <input  class="btn btn-outline-success"  type="submit" value="Editar" style="width: 150px;">
-            <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'modificar_password' %}">Modificar contraseña</a></div>
-            <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'cargar_vacuna' %}">Cargar vacuna</a></div>
-            <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'ver_historial_vacunacion' %}">Ver historial de vacunacion</a></div>
+            <input  class="btn btn-outline-success"  type="submit" value="Cargar vacuna" style="width: 150px;">
+        
         </div>
         </div>
         

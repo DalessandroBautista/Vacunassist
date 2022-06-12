@@ -12,7 +12,7 @@ import random
 from django.urls import reverse
 from django.views.generic import View, TemplateView, ListView
 from django.contrib import messages
-from website.models import Vacuna,Turno,Usuario,VacunaDeUsuario
+from website.models import Vacuna,Turno,Usuario,VacunaDeUsuario, Historial_Vacunacion, EstadosTurno
 import reportlab
 import io
 from django.http import FileResponse
@@ -231,7 +231,7 @@ def solicitarTurnoCovid(request):
         turnos=Turno.objects.filter(user_id=user.id).filter(vacuna='Covid-19')
         print(not turnos)
         if ((((date.today().year-user.fecha_nacimiento.year)>18) &  (not turnos)) &  (user.residencia=="La Plata") ):
-            t = Turno(user=request.user, vacuna="Covid-19")
+            t = Turno(user=request.user, vacuna="Covid-19", estado=EstadosTurno(id=1))
             t.save()
             messages.success(request,"Se ha solicitado un turno la para vacuna de Covid-19 exitosamente")
             info = "Se ha solicitado un turno la para vacuna de Covid-19 exitosamente"
@@ -258,7 +258,7 @@ def solicitarTurnoGripe(request):
         print(not turnos)
         if ((not turnos) &  (user.residencia=="La Plata") ):
             messages.success(request,"Se ha solicitado un turno la para vacuna de la Gripe A exitosamente")
-            t = Turno(user=request.user, vacuna="Gripe A")
+            t = Turno(user=request.user, vacuna="Gripe A",estado=EstadosTurno(id=1))
             t.save()
         elif (turnos):
             messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
@@ -270,12 +270,36 @@ def solicitarTurnoGripe(request):
     # Sino mostrar alerta de  no validado o no tener residencia en LP
     except Exception as e: 
         print(repr(e))
+
+def solicitarTurnoCovid2(request):
+
+    try:
+        user = request.user
+        turnos=Turno.objects.filter(user_id=user.id).filter(vacuna="Covid-19 2da Dosis")
+        primera_dosis= VacunaDeUsuario.objects.filter(user_id=user.id).filter(vacuna="4")
+        print(not turnos)
+        print(not primera_dosis)
+        if ((not turnos) &  (user.residencia=="La Plata") & (not(not primera_dosis))) :
+            messages.success(request,"Se ha solicitado un turno la para vacuna de Covid-19 2da Dosis exitosamente")
+            t = Turno(user=request.user, vacuna="Covid-19 2da Dosis",estado=EstadosTurno(id=1))
+            t.save()
+        elif (turnos):
+            messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
+            print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna o aún no tiene la primer dosis de la vacuna de Covid-19")
+        else:
+            messages.error(request,"No puede solicitar turnos por no ser residente de La Plata o aún no tiene la primer dosis de la vacuna de Covid-19")
+            print("No puede solicitar turnos por no ser residente de La Plata")
+        return render(request,"website/solicitar_turno.html",{})
+    # Sino mostrar alerta de  no validado o no tener residencia en LP
+    except Exception as e: 
+        print(repr(e))
     
+     
  
 def verTurnos(request):
     try:
         user_id = request.user.id
-        lista_turnos= Turno.objects.filter(user_id=user_id).filter(asignado=True)
+        lista_turnos= Turno.objects.filter(user_id=user_id).filter(estado=2)
         print(lista_turnos)
         if (lista_turnos):
             return render(request, 'website/ver_turnos.html', {
@@ -291,7 +315,7 @@ def verTurnos(request):
 def verTurnosPendientes(request):
     try:
         user_id = request.user.id
-        lista_turnos= Turno.objects.filter(user_id=user_id).filter(asignado=False)
+        lista_turnos= Turno.objects.filter(user_id=user_id).filter(estado=1)
         print(lista_turnos)
         if (lista_turnos):
             return render(request, 'website/ver_turnos_pendientes.html', {
@@ -358,3 +382,71 @@ def verRequisitos(request):
         return render(request, 'website/requisitos_vacunas.html', {})
     except Exception as e:
         print(repr(e))
+
+def cargarVacuna(request):
+    id_usuario=request.user.id
+    try:
+        usuario= Usuario.objects.get(id=id_usuario)
+        if request.method=="POST":
+            print('entre al post y creo form')
+            cargar_vacuna_form =CargarVacunaUsuario(request.POST)
+            nombre_vacuna= request.POST.get("vacuna")
+            existe= Historial_Vacunacion.objects.filter(user_id=id_usuario).filter(vacuna=nombre_vacuna)
+            print(existe)
+            if cargar_vacuna_form.is_valid() and not existe:
+                try:
+                    print('antes de guardar datos')
+                    vacuna=Historial_Vacunacion()
+                    cargar_vacuna_form.save(usuario, vacuna)
+                    print('en guardar datos')
+                    messages.success(request, 'Vacuna cargada correctamente')
+                    return redirect('index')
+                except Exception as e: 
+                    print(repr(e))
+                    messages.error(request, 'Su vacuna no ha sido cargada correctamente.')
+            else:
+                messages.error(request, 'Usted ya cargó esta vacuna anteriormente.')
+        else:
+            print('no entre al post y creo form')
+            cargar_vacuna_form=CargarVacunaUsuario()
+            print('form')
+           
+
+        return render(request, "website/cargar_vacuna.html",{ 'cargar_vacuna_form':cargar_vacuna_form})
+    except Exception as e: 
+            print(repr(e))
+            
+
+def verHistorialVacunacion(request):
+    try:
+        user_id = request.user.id
+        lista_vacunas= Historial_Vacunacion.objects.filter(user_id=user_id)
+
+        if (lista_vacunas):
+            return render(request, 'website/ver_historial_vacunacion.html', {
+                'lista_vacunas':lista_vacunas
+            })
+        else:
+            messages.error(request, 'Usted no tiene vacunas cargadas')
+            return render(request, 'website/index.html',{})
+    except Exception as e: 
+        print(repr(e))
+
+def EliminarVacunaUsuario(request,historial_vacuna_id):
+    try:
+        vacuna= Historial_Vacunacion.objects.get(id=historial_vacuna_id)
+        vacuna.delete()
+        messages.success(request, 'Vacuna eliminada correctamente')
+        return render(request, 'website/index.html')
+    except Exception as e: 
+        messages.error(request, 'La vacuna no pudo ser eliminada')
+        
+def CancelarTurnoUsuario(request,turno_id):
+    try:
+        turno= Turno.objects.get(id=turno_id)
+        turno.delete()
+        messages.success(request, 'Su turno fue cancelado correctamente')
+        return render(request, 'website/index.html')
+    except Exception as e: 
+        messages.error(request, 'El turno no pudo ser cancelado')
+    

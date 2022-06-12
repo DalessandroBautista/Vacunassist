@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from website.models import Usuario
+from website.models import Usuario, Historial_Vacunacion
 from django.contrib.auth.forms import AuthenticationForm
 class FormularioContacto(forms.Form):
     asunto=forms.CharField(label="Asunto",required=True)
@@ -275,3 +275,28 @@ class FormularioEmail(forms.ModelForm):
         user.save()
         return user
 
+
+class CargarVacunaUsuario(forms.ModelForm):
+    class Meta:
+        model= Historial_Vacunacion
+        fields=('fecha', 'vacuna')
+        widgets= {
+            'vacuna': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese el nombre de la vacuna'
+                    }
+            ),
+            'fecha': forms.DateInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese la fecha en que se vacunó'
+                    }
+            )
+            }
+    def save(self, usuario, vacuna,commit=True, ):
+        vacuna.fecha= self.cleaned_data['fecha']
+        vacuna.vacuna=self.cleaned_data['vacuna']
+        vacuna.user=usuario
+        vacuna.save()
+        return vacuna

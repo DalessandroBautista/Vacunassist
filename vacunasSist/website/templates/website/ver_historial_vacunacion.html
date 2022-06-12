@@ -1,0 +1,29 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+<div class="container">
+
+  <div class="row">
+    <div class="col">
+        <form action="" method="post" enctype=multipart/form-data>
+            {% csrf_token %}
+            <table>
+                {% for vacuna in lista_vacunas %}
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ vacuna.vacuna }}</h5>
+                      <p class="card-text">{{ vacuna.fecha }}</p>
+                      <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'eliminar_vacuna_usuario' vacuna.id %}">Eliminar vacuna</a></div>
+                    </div>
+                  </div>
+                {% endfor  %}    
+            </table>
+        </form>
+    </div>
+        
+    </div>
+  </div>
+
+</div>
+
+ {% endblock %}
