@@ -18,5 +18,8 @@ INSERT INTO website_usuario(id,password,username,email,nombre,apellido,dni,fecha
     VALUES  ('2','pbkdf2_sha256$320000$j4Ds3sPDO4jamoaBpBnjDP$KOfQO0krc3Rq8H6+5x1MqTLAoB23trvv+t60/hNcZUo=','vacunador','dalessandrobau@gmail.com','Franco','Perez','417850978','2000-10-10','2022-06-11 21:31:10.065834','True','True','False'); 
             
 
-
+INSERT INTO website_estadosturno(id,estado)
+    VALUES  ('1','Pendiente'), 
+            ('2','Aceptado'),
+            ('3','Rechazado');
 
