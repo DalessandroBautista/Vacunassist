@@ -92,7 +92,10 @@
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+ <script>
+   AOS.init();
+ </script>        
         {% if messages %}
             {% for m in messages %}
                 {% if m.tags == "error" %}
