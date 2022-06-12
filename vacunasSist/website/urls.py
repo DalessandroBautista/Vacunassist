@@ -29,4 +29,5 @@ urlpatterns = [
     path('ver_historial_vacunacion',views.verHistorialVacunacion, name="ver_historial_vacunacion"),
     path('eliminar_vacuna_usuario/<int:historial_vacuna_id>/',views.EliminarVacunaUsuario, name="eliminar_vacuna_usuario"),
     path('cancelar_turno_usuario/<int:turno_id>/',views.CancelarTurnoUsuario, name="cancelar_turno_usuario"),
+    path('ver_turnos_delDia',views.verTurnosdelDia, name="ver_turnos_delDia"),
 ]
