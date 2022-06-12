@@ -201,7 +201,7 @@ class UpdateUsuarioForm(forms.ModelForm):
 
 
 class UpdatePasswordForm(forms.ModelForm):
-    oldpassword= forms.CharField(label="Verificacion de contraseña", widget= forms.PasswordInput(
+    oldpassword= forms.CharField(label="Contraseña actual", widget= forms.PasswordInput(
         attrs={
             'class':'form-control',
             'placeholder':'Ingrese su contraseña actual',
@@ -220,6 +220,13 @@ class UpdatePasswordForm(forms.ModelForm):
         model= Usuario
         fields=('password',)
         widgets= {
+            'oldpassword': forms.PasswordInput(
+                attrs={
+                'class':'form-control',
+                'placeholder':'Ingrese su contraseña actual',
+                'required': 'required'
+        }
+        ),
             'password': forms.PasswordInput(
                 attrs={
                     'class':'form-control',
@@ -231,14 +238,8 @@ class UpdatePasswordForm(forms.ModelForm):
                     'class':'form-control',
                     'placeholder':'Repita su nueva contraseña'
                     }
-            ),
-            'oldpassword': forms.PasswordInput(
-                attrs={
-                'class':'form-control',
-                'placeholder':'Ingrese su contraseña actual',
-                'required': 'required'
-        }
-        )      
+            )
+             
         }
         
         def clean_password2(self):

@@ -17,6 +17,7 @@ import reportlab
 import io
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
+from django.contrib.auth.hashers import check_password
 # Create your views here.
 
 """ 
@@ -143,6 +144,7 @@ def verPerfil(request):
             usuario_form =UpdateUsuarioForm(request.POST, instance = usuario)
             if usuario_form.is_valid():
                 try:
+                    print('antes de guardar datos')
                     usuario_form.save()
                     print('en guardar datos')
                     messages.success(request, 'Perfil actualizado correctamente')
@@ -150,6 +152,7 @@ def verPerfil(request):
                 except Exception as e: 
                     print(repr(e))
                     messages.error(request, 'Su perfil no se ha actualizado.')
+           
         else:
             print('no entre al post y creo form')
             usuario_form=UpdateUsuarioForm(instance = usuario)
@@ -170,23 +173,31 @@ def modificar_password(request):
             password_form =UpdatePasswordForm(request.POST)
             password_form.is_valid()
             print(password_form.errors)
+            oldpassword=request.POST.get("oldpassword")
+            clave_usuario=usuario.password
             if True:
-                print('post a validar')
-                mail=usuario.email
-                clave_nueva=request.POST.get("password")
-                usuario.set_password(clave_nueva)
-                usuario.save()
-                print(clave_nueva)
-                message="Tu nueva contraseña es: " + str(clave_nueva)
-                send_mail(
-                    'VacunasSist - Nueva contraseña',
-                    message,
-                    'vacunassist2022@gmail.com',
-                    [mail],
-                    fail_silently=False
-                )
-                messages.success(request, "Hemos modificado tu clave y te la enviamos a tu email.")   
-            return HttpResponseRedirect(reverse('index'))
+                print(clave_usuario)
+                print(oldpassword)
+                if check_password(oldpassword, clave_usuario):
+                    print('post a validar')
+                    mail=usuario.email
+                    clave_nueva=request.POST.get("password")
+                    usuario.set_password(clave_nueva)
+                    usuario.save()
+                    print(clave_nueva)
+                    message="Tu nueva contraseña es: " + str(clave_nueva)
+                    send_mail(
+                        'VacunasSist - Nueva contraseña',
+                        message,
+                        'vacunassist2022@gmail.com',
+                        [mail],
+                        fail_silently=False
+                    )
+                    messages.success(request, "Hemos modificado tu clave y te la enviamos a tu email.")   
+                    return HttpResponseRedirect(reverse('index'))
+                else:
+                    messages.error(request, "La contraseña ingresada no coincide con tu contraseña actual")   
+                    return HttpResponseRedirect(reverse('index'))
         else:
             password_form=UpdatePasswordForm() 
         return render(request, 'website/modificar_password.html', {
