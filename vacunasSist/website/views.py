@@ -449,4 +449,10 @@ def CancelarTurnoUsuario(request,turno_id):
         return render(request, 'website/index.html')
     except Exception as e: 
         messages.error(request, 'El turno no pudo ser cancelado')
-    
+#ver turnos del dia
+def verTurnosdelDia(request):
+    try:
+        list_turnos = Turno.objects.filter(fecha=datetime.date.now()).all()
+        return render(request, 'website/turnos_del_Dia.html', {'list_paciente':list_turnos})
+    except Exception as e:
+        print(repr(e))
