@@ -34,6 +34,7 @@
                 <ul class="navbar-nav mr-auto mx-auto">
                     <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'index' %}">Inicio</a></li>
                     <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'informacion_vacuna' %}">Vacunas</a></li>
+                    <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'requisitos_vacunas' %}">Requisitos</a></li>
                         {% if request.user.is_authenticated %}
                             {% if not request.user.es_vacunador and not request.user.es_administrador%}
                                 <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'verPerfil' %}">Ver perfil</a></li>
