@@ -1,0 +1,8 @@
+{% extends "website/layout.html" %}
+{% block body %}
+<h4 style= "text-align: center">{{ turno.fecha }}</h4>
+{% for turno in  list_turnos%}
+    <h4 style= "text-align: center">Paciente: {{ turno.user }}</h4>
+    <h4 style= "text-align: center">Vacuna: {{ turno.vacuna }}</h4>
+{% end for%}
+{% endblock %}
