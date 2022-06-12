@@ -341,3 +341,9 @@ def verInformacion(request):
         return render(request, 'website/informacion_vacuna.html', {'list_vacunas': list_vacunas })
     except Exception as e: 
         print(repr(e))
+        
+def verRequisitos(request):
+    try:
+        return render(request, 'website/requisitos_vacunas.html', {})
+    except Exception as e:
+        print(repr(e))
