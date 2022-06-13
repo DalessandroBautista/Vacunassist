@@ -31,4 +31,5 @@ urlpatterns = [
     path('cancelar_turno_usuario/<int:turno_id>/',views.CancelarTurnoUsuario, name="cancelar_turno_usuario"),
     path('ver_turnos_delDia',views.verTurnosdelDia, name="ver_turnos_delDia"),
     path('busqueda/', views.buscar, name="buscar"),
+    path('marcar_vacunado/<int:user_id>/<int:vacuna_id>/<int:turno_id>/',views.marcarVacunado, name="marcar_vacunado"),
 ]

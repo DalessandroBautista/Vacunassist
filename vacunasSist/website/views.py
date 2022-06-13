@@ -473,19 +473,35 @@ def verTurnosdelDia(request):
     class Auxiliar():
         def __init__(self):
             self.vacuna = None
+            self.turnoid= None
+            self.idvacuna=None
+            self.idusuario=None
             self.nombre = None
             self.apellido = None
+            self.estado = None
     arrAuxiliar = []
     if (list_turnos):
         for turno in list_turnos:
             user = Usuario.objects.get(id=turno.user.id)
             aux = Auxiliar()
+            print(turno)
+            print(turno.user.id)
+            vacuna=Vacuna.objects.get(nombre=turno.vacuna)
+            print(vacuna)
+            print(vacuna.id)
+            aux.turnoid=turno.id
+            aux.idusuario=turno.user.id
+            aux.idvacuna=vacuna.id
             aux.vacuna=turno.vacuna
             aux.nombre=user.nombre
             aux.apellido=user.apellido
+            print(turno.estado)
+            aux.estado=turno.estado.estado
             arrAuxiliar.append(aux)
+        fechaHoy= datetime.date.today()
+        fechaHoy=fechaHoy.strftime("%d/%m/%y")
         return render(request, 'website/ver_turnos_delDia.html', {
-            'list_turnos':arrAuxiliar, 'fechaHoy':datetime.date.today()
+            'list_turnos':arrAuxiliar, 'fechaHoy':fechaHoy
         })
     else:
         messages.error(request, 'No hay turnos del dia de hoy')
@@ -513,3 +529,19 @@ def buscar(request):
     else:
             messages.error(request, "No se ingresó una búsqueda")
             return render(request, "website/index.html",)
+        
+def marcarVacunado(request,user_id,vacuna_id, turno_id):
+    try:
+        vacunaUsuario= VacunaDeUsuario()
+        vacuna=Vacuna.objects.get(id=vacuna_id)
+        usuario=Usuario.objects.get(id=user_id)
+        turno=Turno.objects.get(id=turno_id)
+        turno.estado=EstadosTurno.objects.get(id="4")
+        vacunaUsuario.vacuna=vacuna
+        vacunaUsuario.user=usuario
+        vacunaUsuario.save()
+        turno.save()
+        messages.success(request, "El usuario se ha marcado como vacunado")
+        return redirect('index')
+    except Exception as e:
+        print(e)
