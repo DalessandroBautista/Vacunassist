@@ -13,8 +13,12 @@
                     <div class="card-body">
                       <h5 class="card-title">{{ vacuna.vacuna }}</h5>
                       <p class="card-text">{{ vacuna.fecha }}</p>
-                      <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'eliminar_vacuna_usuario' vacuna.id %}">Eliminar vacuna</a></div>
-                    </div>
+                      {% if not request.user.es_vacunador%}
+                        {% if not request.user.es_administrador%}
+                          <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'eliminar_vacuna_usuario' vacuna.id %}">Eliminar vacuna</a></div>
+                        {%endif%}
+                      {%endif%}
+                        </div>
                   </div>
                 {% endfor  %}    
             </table>

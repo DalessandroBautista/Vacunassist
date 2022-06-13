@@ -139,6 +139,7 @@ def verPerfil(request):
     id_usuario=request.user.id
     try:
         usuario= Usuario.objects.get(id=id_usuario)
+        
         if request.method=="POST":
             print('entre al post y creo form')
             usuario_form =UpdateUsuarioForm(request.POST, instance = usuario)
@@ -158,8 +159,8 @@ def verPerfil(request):
             usuario_form=UpdateUsuarioForm(instance = usuario)
             print('form')
             usuario_form=usuario_form.deshabilitarCampos(usuario.identidad_verificada)
-
-        return render(request, "website/verPerfil.html",{ 'usuario_form':usuario_form})
+        print(id_usuario)
+        return render(request, "website/verPerfil.html",{ 'usuario_form':usuario_form, 'id_usuario':id_usuario})
     except Exception as e: 
             print(repr(e))
 
@@ -417,9 +418,9 @@ def cargarVacuna(request):
             print(repr(e))
             
 
-def verHistorialVacunacion(request):
+def verHistorialVacunacion(request, usuario_id):
     try:
-        user_id = request.user.id
+        user_id = usuario_id
         lista_vacunas= Historial_Vacunacion.objects.filter(user_id=user_id)
 
         if (lista_vacunas):
@@ -427,7 +428,7 @@ def verHistorialVacunacion(request):
                 'lista_vacunas':lista_vacunas
             })
         else:
-            messages.error(request, 'Usted no tiene vacunas cargadas')
+            messages.error(request, 'No tiene vacunas cargadas')
             return render(request, 'website/index.html',{})
     except Exception as e: 
         print(repr(e))
@@ -456,3 +457,26 @@ def verTurnosdelDia(request):
         return render(request, 'website/turnos_del_Dia.html', {'list_paciente':list_turnos})
     except Exception as e:
         print(repr(e))
+
+def buscar(request):
+    if request.GET["dni"]:
+        try:
+            dni=request.GET.get("dni")
+            dni.strip()
+            print (dni)
+            usuario=Usuario.objects.get(dni=dni)
+            usuario_form=UpdateUsuarioForm(instance = usuario)
+            usuario_form=usuario_form.deshabilitarCamposVacunador()
+            id_usuario=usuario.id
+            if not usuario:
+                messages.error(request, "No se encontró un usuario con ese DNI")
+
+            usuario=Usuario.objects.filter(dni=dni)
+            return render(request, "website/verPerfil.html",{"usuario_form": usuario_form, 'id_usuario':id_usuario })
+        except Exception as e:
+            print(repr(e))   
+            messages.error(request, "No se encontró un usuario con ese DNI")
+            return render(request, "website/index.html",)
+    else:
+            messages.error(request, "No se ingresó una búsqueda")
+            return render(request, "website/index.html",)

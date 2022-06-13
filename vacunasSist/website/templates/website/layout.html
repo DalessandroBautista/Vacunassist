@@ -33,8 +33,10 @@
                 </button>
                 <ul class="navbar-nav mr-auto mx-auto">
                     <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'index' %}">Inicio</a></li>
-                    <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'informacion_vacuna' %}">Vacunas</a></li>
-                    <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'requisitos_vacunas' %}">Requisitos</a></li>
+                    {% if not request.user.es_vacunador %}
+                        <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'informacion_vacuna' %}">Vacunas</a></li>
+                        <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'requisitos_vacunas' %}">Requisitos</a></li>
+                    {% endif %}    
                         {% if request.user.is_authenticated %}
                             {% if not request.user.es_vacunador and not request.user.es_administrador%}
                                 <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'verPerfil' %}">Ver perfil</a></li>
@@ -48,12 +50,13 @@
                                     <li class="nav-item"><a class="navbar-brand" style="color:white" href="{% url 'ver_vacunas_aplicadas' %}">Ver vacunas aplicadas</a></li>
                                 {% endif %}
                             {% else %}
-                                <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'solicitar_turno' %}">Buscar paciente</a></li>
-                                <li class="nav-item"><a class="navbar-brand" style="color:white" href="{% url 'ver_vacunas_aplicadas' %}">Ver turnos del dia</a></li>
+                                <form action="/busqueda" method="GET" class="d-flex">
+                                    <input type="search" name="dni" id="" placeholder="Ingrese el DNI" class="form-control" value={{request.GET.dni}}>
+                                    <button class="btn nav-item" style="color:white" type="submit">Buscar</button>
+                                </form>
+                                <li class="nav-item"><a class="navbar-brand" style="color:white" href="{% url 'ver_turnos_delDia' %}">Ver turnos del dia</a></li>
                             
                                 {% if  request.user.es_vacunador %}
-                                   <li class="nav-item"><a class="navbar-brand" style="color:white" href="{% url 'ver_turnos_delDia' %}">Ver turnos del dia</a></li>
-                                    <a class="nav-item navbar-brand mx-8 dropdown-toggle" id="navbarDropdown" style="color:white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Agregar vacunas</a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_turnos' %}">Ver turnos aceptados</a></li>
                                         <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_turnos_pendientes' %}">Ver turnos pendientes</a></li>
