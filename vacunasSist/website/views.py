@@ -1,4 +1,5 @@
 from datetime import date
+import datetime
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
@@ -450,13 +451,45 @@ def CancelarTurnoUsuario(request,turno_id):
         return render(request, 'website/index.html')
     except Exception as e: 
         messages.error(request, 'El turno no pudo ser cancelado')
+
 #ver turnos del dia
 def verTurnosdelDia(request):
-    try:
-        list_turnos = Turno.objects.filter(fecha=datetime.date.now()).all()
-        return render(request, 'website/turnos_del_Dia.html', {'list_paciente':list_turnos})
-    except Exception as e:
-        print(repr(e))
+    # try:
+    #     #list_turnos = Turno.objects.filter(fecha=datetime.date.today())
+    #     list_turnos = Turno.objects.all()
+
+    #     #return render(request, 'website/ver_turnos_delDia.html', {'list_turnos':list_turnos, 'fechaHoy':datetime.date.today()})
+    #     #return render(request, 'website/ver_turnos_delDia.html', {})
+    #     if (list_turnos):
+    #         return render(request, 'website/ver_turnos_delDia.html', {
+    #             'list_turnos':list_turnos
+    #         })
+    #     else:
+    #         messages.error(request, 'No hay turnos del dia de hoy')
+    #         return render(request, 'website/index.html',{})
+    # except Exception as e:
+    #     print(repr(e))
+    list_turnos = Turno.objects.filter(fecha=datetime.date.today())
+    class Auxiliar():
+        def __init__(self):
+            self.vacuna = None
+            self.nombre = None
+            self.apellido = None
+    arrAuxiliar = []
+    if (list_turnos):
+        for turno in list_turnos:
+            user = Usuario.objects.get(id=turno.user.id)
+            aux = Auxiliar()
+            aux.vacuna=turno.vacuna
+            aux.nombre=user.nombre
+            aux.apellido=user.apellido
+            arrAuxiliar.append(aux)
+        return render(request, 'website/ver_turnos_delDia.html', {
+            'list_turnos':arrAuxiliar, 'fechaHoy':datetime.date.today()
+        })
+    else:
+        messages.error(request, 'No hay turnos del dia de hoy')
+        return render(request, 'website/index.html',{})
 
 def buscar(request):
     if request.GET["dni"]:
