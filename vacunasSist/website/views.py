@@ -238,8 +238,19 @@ def solicitarTurnoCovid(request):
             messages.success(request,"Se ha solicitado un turno la para vacuna de Covid-19 exitosamente")
             info = "Se ha solicitado un turno la para vacuna de Covid-19 exitosamente"
         elif (turnos):
-            messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
-            print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
+            # Antes este elif tenia solo estas dos lineas de abajo
+            # messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
+            # print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
+            turno = turnos[0]
+            if (turno.estado_id==1):
+                 messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno solicitado para la misma")
+                 print("No puede solicitar turnos por ya tener un turno solicitado para esta vacuna")
+            elif (turno.estado_id==2):
+                 messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
+                 print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
+            else:
+                messages.error(request,"No puede solicitar un turno para esta vacuna por ya habersela aplicado con anterioridad")
+                print("No puede solicitar turnos por ya habersela aplicado con anterioridad")   
         elif(not ((date.today().year-user.fecha_nacimiento.year)>18)):
             messages.error(request,"No puede solicitar un turno para esta vacuna por no ser mayor de edad")
             print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
@@ -263,8 +274,19 @@ def solicitarTurnoGripe(request):
             t = Turno(user=request.user, vacuna="Gripe A",estado=EstadosTurno(id=1))
             t.save()
         elif (turnos):
-            messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
-            print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
+            # Antes este elif tenia solo estas dos lineas de abajo
+            # messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
+            # print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
+            turno = turnos[0]
+            if (turno.estado_id==1):
+                 messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno solicitado para la misma")
+                 print("No puede solicitar turnos por ya tener un turno solicitado para esta vacuna")
+            elif (turno.estado_id==2):
+                 messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
+                 print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
+            else:
+                messages.error(request,"No puede solicitar un turno para esta vacuna por ya habersela aplicado con anterioridad")
+                print("No puede solicitar turnos por ya habersela aplicado con anterioridad")  
         else:
             messages.error(request,"No puede solicitar turnos por no ser residente de La Plata")
             print("No puede solicitar turnos por no ser residente de La Plata")
@@ -278,7 +300,7 @@ def solicitarTurnoCovid2(request):
     try:
         user = request.user
         turnos=Turno.objects.filter(user_id=user.id).filter(vacuna="Covid-19 2da Dosis")
-        primera_dosis= VacunaDeUsuario.objects.filter(user_id=user.id).filter(vacuna="4")
+        primera_dosis= VacunaDeUsuario.objects.filter(user_id=user.id).filter(vacuna="3")
         print(not turnos)
         print(not primera_dosis)
         if ((not turnos) &  (user.residencia=="La Plata") & (not(not primera_dosis))) :
@@ -286,8 +308,19 @@ def solicitarTurnoCovid2(request):
             t = Turno(user=request.user, vacuna="Covid-19 2da Dosis",estado=EstadosTurno(id=1))
             t.save()
         elif (turnos):
-            messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
-            print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna o aún no tiene la primer dosis de la vacuna de Covid-19")
+            # Antes este elif tenia solo estas dos lineas de abajo
+            # messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
+            # print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
+            turno = turnos[0]
+            if (turno.estado_id==1):
+                 messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno solicitado para la misma")
+                 print("No puede solicitar turnos por ya tener un turno solicitado para esta vacuna")
+            elif (turno.estado_id==2):
+                 messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
+                 print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
+            else:
+                messages.error(request,"No puede solicitar un turno para esta vacuna por ya habersela aplicado con anterioridad")
+                print("No puede solicitar turnos por ya habersela aplicado con anterioridad")  
         else:
             messages.error(request,"No puede solicitar turnos por no ser residente de La Plata o aún no tiene la primer dosis de la vacuna de Covid-19")
             print("No puede solicitar turnos por no ser residente de La Plata")
