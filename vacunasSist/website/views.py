@@ -180,13 +180,15 @@ def modificar_password(request):
             print(password_form.errors)
             oldpassword=request.POST.get("oldpassword")
             clave_usuario=usuario.password
-            if True:
+            clave_nueva=request.POST.get("password")
+            segunda_clave=request.POST.get("password2")
+            if clave_nueva == segunda_clave:
                 print(clave_usuario)
                 print(oldpassword)
                 if check_password(oldpassword, clave_usuario):
                     print('post a validar')
                     mail=usuario.email
-                    clave_nueva=request.POST.get("password")
+                    
                     usuario.set_password(clave_nueva)
                     usuario.save()
                     print(clave_nueva)
@@ -203,6 +205,9 @@ def modificar_password(request):
                 else:
                     messages.error(request, "La contraseña ingresada no coincide con tu contraseña actual")   
                     return HttpResponseRedirect(reverse('index'))
+            else:
+                messages.error(request, "La contraseñas ingresadas no coinciden")   
+                return HttpResponseRedirect(reverse('index'))
         else:
             password_form=UpdatePasswordForm() 
         return render(request, 'website/modificar_password.html', {
