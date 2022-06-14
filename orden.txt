@@ -1,0 +1,14 @@
+Crear 3 usuarios:
+U1 Un usuario sin identidad validad
+U2 Uno sin turnos, para solicitar las vacunas
+U3 Otro con todos turnos aceptados UNO PARA DIA DE HOY, OTRO PARA UN DIA FUTURO,
+ para ver turnos aceptados y despues que el vacunador los marque como vacunado
+U3 Ver mis vacunas aplicadas y obtener certificao de vacunacion
+U2 o U3 para cargar historial de vacunacion
+U1 para modificar datos y ver que si ya existe (dni, email, username no lo cambia
+ poniendo datos del u2 o u3)
+U1 para cancelar turno pendiente y U2 para cancelar turno aceptado (Hacerlo al final
+ asi ya no se necesitan los turnos aceptados)
+UVacunador para buscar paciente, ver turnos del dia, marcar como vacunado
+
+U1 recuperar contraseña y cambiar contraseña
