@@ -303,7 +303,7 @@ class CargarVacunaUsuario(forms.ModelForm):
             'fecha': forms.DateInput(
                 attrs={
                     'class':'form-control',
-                    'placeholder':'Ingrese la fecha en que se vacunó'
+                    'placeholder':'Ingrese la fecha en que se vacunó con el formato AAAA-MM-DD'
                     }
             )
             }

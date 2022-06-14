@@ -7,11 +7,12 @@
 <div style="display:flex">
     <div class="card" style="width: 18rem;">
         <div class="card-body">
-          <h5 class="card-title">Vacuna Covid 1ra dosis</h5>
+          <h5 class="card-title">Vacuna Covid</h5>
 
           <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'solicitar_turno_covid' %}">Solicitar</a></div>
         </div>
       </div>
+      {% comment %}
       <div class="card" style="width: 18rem;">
         <div class="card-body">
           <h5 class="card-title">Vacuna Covid 2da dosis</h5>
@@ -19,6 +20,7 @@
           <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'solicitar_turno_covid2' %}">Solicitar</a></div>
         </div>
       </div>
+       {% endcomment %}
       <div class="card" style="width: 18rem;">
         <div class="card-body">
           <h5 class="card-title">Vacuna Gripe A</h5>

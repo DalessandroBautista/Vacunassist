@@ -16,6 +16,7 @@ from django.contrib import messages
 from website.models import Vacuna,Turno,Usuario,VacunaDeUsuario, Historial_Vacunacion, EstadosTurno
 import reportlab
 import io
+from django.utils.dateparse import parse_date
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
 from django.contrib.auth.hashers import check_password
@@ -412,7 +413,12 @@ def cargarVacuna(request):
             print('entre al post y creo form')
             cargar_vacuna_form =CargarVacunaUsuario(request.POST)
             nombre_vacuna= request.POST.get("vacuna")
-            existe= Historial_Vacunacion.objects.filter(user_id=id_usuario).filter(vacuna=nombre_vacuna)
+            fecha=request.POST.get("fecha")
+            date = parse_date(fecha)
+            print("imprimo fecha")
+            print(date)
+            print("imprimo fecha 2")
+            existe= Historial_Vacunacion.objects.filter(user_id=id_usuario).filter(vacuna=nombre_vacuna).filter(fecha=date)
             print(existe)
             if cargar_vacuna_form.is_valid() and not existe:
                 try:
