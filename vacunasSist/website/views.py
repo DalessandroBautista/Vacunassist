@@ -68,10 +68,13 @@ def login(request):
                 auth_login(request, user)
                 return render(request, "website/index.html")
             else:
-                form=LoginForm()
+                form=FormularioLogin()
                 messages.error(request,"El usuario o la contraseña son incorrectos")
                 return render(request, "website/registration/login.html",{"form": form})
         except Exception as e: 
+            form=FormularioLogin()
+            messages.error(request,"El usuario o la contraseña son incorrectos")
+            return render(request, "website/registration/login.html",{"form": form})
             print(repr(e))  
         """
         try:
@@ -237,9 +240,13 @@ def solicitarTurnoCovid(request):
             t.save()
             messages.success(request,"Se ha solicitado un turno la para vacuna de Covid-19 exitosamente")
             info = "Se ha solicitado un turno la para vacuna de Covid-19 exitosamente"
-        elif (turnos):
-            messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
-            print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
+        elif (turnos):    
+            if (turnos[0].estado==EstadosTurno.objects.get(id="4")):
+                 messages.error(request,"No puede solicitar un turno para esta vacuna por ya habersela aplicado")
+            
+            else:
+                messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
+                print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
         elif(not ((date.today().year-user.fecha_nacimiento.year)>18)):
             messages.error(request,"No puede solicitar un turno para esta vacuna por no ser mayor de edad")
             print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
@@ -263,8 +270,12 @@ def solicitarTurnoGripe(request):
             t = Turno(user=request.user, vacuna="Gripe A",estado=EstadosTurno(id=1))
             t.save()
         elif (turnos):
-            messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
-            print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
+            if (turnos[0].estado==EstadosTurno.objects.get(id="4")):
+                 messages.error(request,"No puede solicitar un turno para esta vacuna por ya habersela aplicado")
+            
+            else:
+                messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
+                print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna")
         else:
             messages.error(request,"No puede solicitar turnos por no ser residente de La Plata")
             print("No puede solicitar turnos por no ser residente de La Plata")
@@ -286,7 +297,10 @@ def solicitarTurnoCovid2(request):
             t = Turno(user=request.user, vacuna="Covid-19 2da Dosis",estado=EstadosTurno(id=1))
             t.save()
         elif (turnos):
-            messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
+            if (turnos[0].estado==EstadosTurno.objects.get(id="4")):
+                messages.error(request,"No puede solicitar un turno para esta vacuna por ya habersela aplicado")
+            else:
+                messages.error(request,"No puede solicitar un turno para esta vacuna por ya tener un turno asignado para la misma")
             print("No puede solicitar turnos por ya tener un turno asignado para esta vacuna o aún no tiene la primer dosis de la vacuna de Covid-19")
         else:
             messages.error(request,"No puede solicitar turnos por no ser residente de La Plata o aún no tiene la primer dosis de la vacuna de Covid-19")
