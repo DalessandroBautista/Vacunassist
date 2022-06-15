@@ -363,7 +363,7 @@ def verVacunasAplicadas(request):
             
         print(lista_vacunas)
         print(len(lista_vacunas))
-        if (len(lista_vacunas)>1):
+        if (len(lista_vacunas)>0):
             return render(request, 'website/ver_vacunas_aplicadas.html', {
                 'lista_vacunas':lista_vacunas
             })
@@ -449,7 +449,9 @@ def verHistorialVacunacion(request, usuario_id):
         user_id = usuario_id
         lista_vacunas= Historial_Vacunacion.objects.filter(user_id=user_id)
 
+        print(type(lista_vacunas))
         if (lista_vacunas):
+            print("if historiaL")
             return render(request, 'website/ver_historial_vacunacion.html', {
                 'lista_vacunas':lista_vacunas
             })

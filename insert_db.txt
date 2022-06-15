@@ -19,7 +19,8 @@ INSERT INTO website_estadosturno(id,estado)
     VALUES  ('1','Pendiente'), 
             ('2','Aceptado'),
             ('3','Rechazado'),
-	    ('4','Atendido');
+	    ('4','Atendido'),
+	    ('5','Cancelado);
 
 
 
