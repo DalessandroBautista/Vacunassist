@@ -28,7 +28,6 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -53,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'website',
     'debug_toolbar',
+    'bootstrap_datepicker_plus',
 ]
 
 MIDDLEWARE = [

@@ -11,6 +11,8 @@
                     <p class="card-text">Vacuna: {{ turno.vacuna }}</p>
                     {% if not turno.estado == "Atendido"%}
                     <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'marcar_vacunado' turno.idusuario turno.idvacuna turno.turnoid %}">Marcar como vacunado</a></div>
+                    {% else %}
+                    <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="#">Esta persona ya fue vacunada.</a></div>
                     {%endif%}
                 </div>
                 </div>

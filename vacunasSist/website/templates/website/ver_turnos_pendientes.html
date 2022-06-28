@@ -14,6 +14,7 @@
                         <div class="card-body p-4">
                             <div class="text-center">
                                 <h5 class="fw-bolder">{{ un_turno.vacuna }}</h5>
+                                <p> El turno está pendiente de aprobación, en cuanto un administrador lo apruebe podrás verlo en la sección de <a class="dropdown-item" style="color:blue" href="{% url 'ver_turnos' %}">Ver turnos aceptados</a></p>
                                 <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'cancelar_turno_usuario' un_turno.id %}">Cancelar turno</a></div>
                             </div>
                         </div>

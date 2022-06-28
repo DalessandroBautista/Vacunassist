@@ -1,0 +1,42 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+<div class="container">
+
+  <div class="row">
+    <div class="col">
+            <table>
+                <h1>Estos son los turnos solicitados</h1>
+                {% for un_turno in list_turnos %}
+                <div class="col mb-5">
+                    <div class="card h-100">
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder">Turno solicitado para: {{ un_turno.vacuna }} por el usuario: { dic[un_turno.id] }</h5>
+                                <b> Elegir turno para el día: </b> 
+                                <div> {{fecha_form.Date}} </div>
+                                
+                                <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'cancelar_turno_usuario' un_turno.id %}">Aceptar turno</a></div>
+                                <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'cancelar_turno_usuario' un_turno.id %}">Rechazar turno</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor  %}
+            </table>
+    </div>
+        
+    </div>
+  </div>
+
+</div>
+
+  <script>
+    $(function () {
+      $("#datetimepicker1").datetimepicker();
+    });
+  </script>
+
+
+ {% endblock %}
+

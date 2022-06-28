@@ -2,14 +2,28 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from website.models import Usuario, Historial_Vacunacion
+from django.forms import ModelForm
+from .models import Offer
 from django.contrib.auth.forms import AuthenticationForm
 class FormularioContacto(forms.Form):
     asunto=forms.CharField(label="Asunto",required=True)
     email=forms.EmailField(label="Emai",required=True)
     mensaje=forms.CharField(label="Contenido", widget=forms.Textarea)
-    
+
+from bootstrap_datepicker_plus.widgets import DateTimePickerInput
+from django.db import models
 
 
+class CreateForm(forms.ModelForm):
+    class Meta:
+        model = Offer
+        fields =[            
+            "Date",
+        ]
+
+    widgets = {
+        'Date': DateTimePickerInput(),
+    }
 class LoginForm(forms.Form):
     username = forms.CharField(
         label='Usuario', widget=forms.TextInput(attrs={'class': 'usuario'}), max_length=150, required=True, )

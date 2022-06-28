@@ -321,11 +321,14 @@ def solicitarTurnoCovid2(request):
 def verTurnos(request):
     try:
         user_id = request.user.id
+        usuario= Usuario.objects.get(id=user_id)
+        vacunatorio_preferencia= usuario.vacunatorio_preferencia
         lista_turnos= Turno.objects.filter(user_id=user_id).filter(estado=2)
         print(lista_turnos)
         if (lista_turnos):
             return render(request, 'website/ver_turnos.html', {
-                'lista_turnos':lista_turnos
+                'lista_turnos':lista_turnos,
+                'vacunatorio_preferencia':vacunatorio_preferencia
             })
         else:
             messages.error(request, 'Usted no tiene turnos aceptados ')
@@ -572,3 +575,34 @@ def marcarVacunado(request,user_id,vacuna_id, turno_id):
         return redirect('index')
     except Exception as e:
         print(e)
+
+def aceptarTurnos(request):
+    try:
+        print("estoy")
+        list_turnos = Turno.objects.filter(estado_id=1)
+        print("turnos")
+        dic={}
+        for turno in list_turnos:
+            user= Usuario.objects.get(id=turno.user_id)
+            print("user")
+            print(user.id)
+            print(turno.user_id)
+            print(turno.id)
+            dic[turno.id]=user
+            print(dic[turno.id].nombre)
+        print("for")
+        fecha_form=CreateForm()
+        return render(request, "website/ver_turnos_aceptables.html",{"list_turnos":list_turnos, 'dic':dic, fecha_form:fecha_form })
+
+    except Exception as e:
+        print(e)
+        
+def RechazarTurnoUsuario(request,turno_id):
+    try:
+        turno= Turno.objects.get(id=turno_id)
+        turno.estado_id= EstadosTurno.objects.get(id="3")
+        turno.save()
+        messages.success(request, 'El turno fue rechazado correctamente')
+        return render(request, 'website/index.html')
+    except Exception as e: 
+        messages.error(request, 'El turno no pudo ser rechazado')

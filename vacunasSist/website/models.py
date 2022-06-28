@@ -5,6 +5,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser, BaseUserManager
 
 
+class Offer(models.Model):
+    Date = models.DateField(null=True)
+
+
 class Vacuna(models.Model):
     nombre=models.CharField(max_length=40)
     informacion= models.TextField(max_length=700)
