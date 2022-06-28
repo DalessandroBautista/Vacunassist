@@ -9,3 +9,5 @@ Estados de turno:
 3 Rechazado
 4 Atendido
 5 Cancelado
+
+**ModuleNotFoundError: No module named 'bootstrap_datepicker_plus'** pip install django-bootstrap-datepicker-plus
