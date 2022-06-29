@@ -3,6 +3,10 @@ Las fechas funcionan asi "MM/DD/AA"
 python3 manage.py runserver | Correr server
 
 
+python3 manage.py makemigrations
+python3 manage.py migrate
+
+
 Estados de turno:
 1 Pendiente
 2 Aceptado
