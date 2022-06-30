@@ -54,9 +54,11 @@
                                     <input type="search" name="dni" id="" placeholder="Ingrese el DNI" class="form-control" value={{request.GET.dni}}>
                                     <button class="btn nav-item" style="color:white" type="submit">Buscar</button>
                                 </form>
-                                <li class="nav-item"><a class="navbar-brand" style="color:white" href="{% url 'ver_turnos_delDia' %}">Ver turnos del dia</a></li>
+                                {% if  request.user.es_vacunador%}
+                                    <li class="nav-item"><a class="navbar-brand" style="color:white" href="{% url 'ver_turnos_delDia' %}">Ver turnos del dia</a></li>
+                                {% endif %}
                                 {% comment %}
-                                {% if  request.user.es_vacunador %}
+                                {% if  request.user.es_vacunador and not request.user.es_administrador %}
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_turnos' %}">Ver turnos aceptados</a></li>
                                         <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_turnos_pendientes' %}">Ver turnos pendientes</a></li>
@@ -64,7 +66,7 @@
                                     <li class="nav-item"><a class="navbar-brand" style="color:white" href="{% url 'ver_vacunas_aplicadas' %}">Ver vacunas aplicadas</a></li>
                                 {% endif %}
                                 {% endcomment %}
-                                {% if  request.user.es_administrador %}
+                                {% if  request.user.es_administrador%}
                                     <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'aceptar_turnos' %}">Ver turnos solicitados</a></li>
                                     <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'ver_estadisticas' %}">Ver estadisticas</a></li>
                                     {% endif %}
