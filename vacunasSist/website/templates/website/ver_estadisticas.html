@@ -1,0 +1,23 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+<div class="container">
+
+  <div class="row">
+    <div class="col">
+        {% load index %}
+        {% for vacunatorio in datosGenerales %}
+          <h1>{{vacunatorio|index:0}}</h1>
+          {% for vacunas in vacunatorio.1 %}
+            <p>Cantidad de vacunados de <u>{{vacunas|index:0}}</u> : <strong>{{vacunas|index:1}} persona </strong></p>
+          {% endfor%}
+        {% endfor  %}
+        <img src="\static\img\tt.jpg"></img>
+    </div>
+        
+    </div>
+  </div>
+
+</div>
+
+ {% endblock %}
