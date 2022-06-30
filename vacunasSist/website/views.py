@@ -13,7 +13,7 @@ import random
 from django.urls import reverse
 from django.views.generic import View, TemplateView, ListView
 from django.contrib import messages
-from website.models import Vacuna,Turno,Usuario,VacunaDeUsuario, Historial_Vacunacion, EstadosTurno
+from website.models import Vacuna,Turno,Usuario,VacunaDeUsuario, Historial_Vacunacion, EstadosTurno, Vacunatorio
 import reportlab
 import io
 from django.utils.dateparse import parse_date
@@ -242,7 +242,7 @@ def solicitarTurnoCovid(request):
         turnos=Turno.objects.filter(user_id=user.id).filter(vacuna='Covid-19')
         print(not turnos)
         if ((((date.today().year-user.fecha_nacimiento.year)>18) &  (not turnos)) &  (user.residencia=="La Plata") ):
-            t = Turno(user=request.user, vacuna="Covid-19", estado=EstadosTurno(id=1))
+            t = Turno(user=request.user, vacuna="Covid-19", estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id)
             t.save()
             messages.success(request,"Se ha solicitado un turno la para vacuna de Covid-19 exitosamente")
             info = "Se ha solicitado un turno la para vacuna de Covid-19 exitosamente"
@@ -273,7 +273,7 @@ def solicitarTurnoGripe(request):
         print(not turnos)
         if ((not turnos) &  (user.residencia=="La Plata") ):
             messages.success(request,"Se ha solicitado un turno la para vacuna de la Gripe A exitosamente")
-            t = Turno(user=request.user, vacuna="Gripe A",estado=EstadosTurno(id=1))
+            t = Turno(user=request.user, vacuna="Gripe A", estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id)
             t.save()
         elif (turnos):
             if (turnos[0].estado==EstadosTurno.objects.get(id="4")):
@@ -300,7 +300,7 @@ def solicitarTurnoCovid2(request):
         print(not primera_dosis)
         if ((not turnos) &  (user.residencia=="La Plata") & (not(not primera_dosis))) :
             messages.success(request,"Se ha solicitado un turno la para vacuna de Covid-19 2da Dosis exitosamente")
-            t = Turno(user=request.user, vacuna="Covid-19 2da Dosis",estado=EstadosTurno(id=1))
+            t = Turno(user=request.user, vacuna="Covid-19 2da Dosis",estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id)
             t.save()
         elif (turnos):
             if (turnos[0].estado==EstadosTurno.objects.get(id="4")):
@@ -606,3 +606,24 @@ def RechazarTurnoUsuario(request,turno_id):
         return render(request, 'website/index.html')
     except Exception as e: 
         messages.error(request, 'El turno no pudo ser rechazado')
+
+def verEstadisticas (request):
+    vacunas = Vacuna.objects.all()
+    vacunatorios = Vacunatorio.objects.all()
+    datosGenerales = []
+    for vacunatorio in vacunatorios:
+        datosLocales = []
+        datosLocales.append(vacunatorio.nombre+" en "+vacunatorio.ubicacion)
+        datosVacunatorio = []
+        for vacuna in vacunas:
+            datosVacuna = []
+            valor=0
+            turno = Turno.objects.filter(vacuna=vacuna.nombre).filter(vacunatorio_id=vacunatorio.id)
+            if (turno is not None):
+                valor = len(turno)
+            datosVacuna.append(vacuna.nombre)
+            datosVacuna.append(valor)
+            datosVacunatorio.append(datosVacuna)
+        datosLocales.append(datosVacunatorio)
+        datosGenerales.append(datosLocales)
+    return render(request,"website/ver_estadisticas.html",{"datosGenerales":datosGenerales})
