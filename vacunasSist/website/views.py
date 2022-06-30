@@ -242,7 +242,7 @@ def solicitarTurnoCovid(request):
         turnos=Turno.objects.filter(user_id=user.id).filter(vacuna='Covid-19')
         print(not turnos)
         if ((((date.today().year-user.fecha_nacimiento.year)>18) &  (not turnos)) &  (user.residencia=="La Plata") ):
-            t = Turno(user=request.user, vacuna="Covid-19", estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id)
+            t = Turno(user=request.user, vacuna="Covid-19", estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id))
             t.save()
             messages.success(request,"Se ha solicitado un turno la para vacuna de Covid-19 exitosamente")
             info = "Se ha solicitado un turno la para vacuna de Covid-19 exitosamente"
@@ -273,7 +273,7 @@ def solicitarTurnoGripe(request):
         print(not turnos)
         if ((not turnos) &  (user.residencia=="La Plata") ):
             messages.success(request,"Se ha solicitado un turno la para vacuna de la Gripe A exitosamente")
-            t = Turno(user=request.user, vacuna="Gripe A", estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id)
+            t = Turno(user=request.user, vacuna="Gripe A", estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id))
             t.save()
         elif (turnos):
             if (turnos[0].estado==EstadosTurno.objects.get(id="4")):
@@ -300,7 +300,7 @@ def solicitarTurnoCovid2(request):
         print(not primera_dosis)
         if ((not turnos) &  (user.residencia=="La Plata") & (not(not primera_dosis))) :
             messages.success(request,"Se ha solicitado un turno la para vacuna de Covid-19 2da Dosis exitosamente")
-            t = Turno(user=request.user, vacuna="Covid-19 2da Dosis",estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id)
+            t = Turno(user=request.user, vacuna="Covid-19 2da Dosis",estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id))
             t.save()
         elif (turnos):
             if (turnos[0].estado==EstadosTurno.objects.get(id="4")):
