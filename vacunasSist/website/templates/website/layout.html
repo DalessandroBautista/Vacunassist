@@ -33,7 +33,7 @@
                 </button>
                 <ul class="navbar-nav mr-auto mx-auto">
                     <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'index' %}">Inicio</a></li>
-                    {% if not request.user.es_vacunador %}
+                    {% if not request.user.es_vacunador  and not request.user.es_administrador %}
                         <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'informacion_vacuna' %}">Vacunas</a></li>
                         <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'requisitos_vacunas' %}">Requisitos</a></li>
                     {% endif %}    
@@ -66,6 +66,7 @@
                                 {% endcomment %}
                                 {% if  request.user.es_administrador %}
                                     <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'aceptar_turnos' %}">Ver turnos solicitados</a></li>
+                                    <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'ver_estadisticas' %}">Ver estadisticas</a></li>
                                     {% endif %}
                             {% endif %}
                         {% endif %}
