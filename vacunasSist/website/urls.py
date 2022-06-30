@@ -34,4 +34,5 @@ urlpatterns = [
     path('marcar_vacunado/<int:user_id>/<int:vacuna_id>/<int:turno_id>/',views.marcarVacunado, name="marcar_vacunado"),
     path('aceptar_turnos',views.aceptarTurnos, name="aceptar_turnos"),
     path('rechazar_turno_usuario/<int:turno_id>/',views.RechazarTurnoUsuario, name="rechazar_turno_usuario"),
+    path('ver_estadisticas',views.verEstadisticas, name="ver_estadisticas"),
 ]
