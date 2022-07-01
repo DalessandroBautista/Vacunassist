@@ -6,12 +6,17 @@
   <div class="row">
     <div class="col">
         {% load index %}
+        {% load total %}
         {% for vacunatorio in datosGenerales %}
           <h1>{{vacunatorio|index:0}}</h1>
           {% for vacunas in vacunatorio.1 %}
             <p>Cantidad de vacunados de <u>{{vacunas|index:0}}</u> : <strong>{{vacunas|index:1}} persona </strong></p>
           {% endfor%}
         {% endfor  %}
+        <h1>Totales</h1>
+        {% for dato in datosGenerales|total%}
+          <p> {{dato|index:0}} <strong>{{dato|index:1}} persona</strong></p>
+        {% endfor %}
         <img src="\static\img\tt.jpg"></img>
     </div>
         
