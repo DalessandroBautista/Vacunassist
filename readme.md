@@ -1,4 +1,4 @@
-Las fechas funcionan asi "MM/DD/AA"
+Las fechas en turnos funcionan asi "AAAA-MM-DD"
 
 python3 manage.py runserver | Correr server
 
