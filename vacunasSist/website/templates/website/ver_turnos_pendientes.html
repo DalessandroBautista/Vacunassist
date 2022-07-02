@@ -1,9 +1,10 @@
 {% extends "website/layout.html" %}
 
 {% block body %}
+{% if not request.user.es_vacunador  and not request.user.es_administrador %} 
 <div class="container">
-
-  <div class="row">
+    
+    <div class="row">
     <div class="col">
         <form action="" method="post" enctype=multipart/form-data>
             {% csrf_token %}
@@ -24,10 +25,12 @@
             </table>
         </form>
     </div>
-        
-    </div>
+    
+</div>
   </div>
 
 </div>
+{% else %} <h5> No tienes permisos para ver esta página</h5>
+{% endif %}
 
- {% endblock %}
+{% endblock %}

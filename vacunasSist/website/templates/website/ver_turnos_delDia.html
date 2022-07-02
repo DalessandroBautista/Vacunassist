@@ -1,18 +1,19 @@
 {% extends "website/layout.html" %}
 {% block body %}
-    <h4 style= "text-align: center">Turnos del: {{ fechaHoy }}</h4>
-    <table>
+{% if request.user.es_administrador or request.user.es_vacunador %} 
+<h4 style= "text-align: center">Turnos del: {{ fechaHoy }}</h4>
+<table>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-        {% for turno in  list_turnos%}
+            {% for turno in  list_turnos%}
             <div class="col mb-5">
                 <div class="card h-100">
                     <div class="card-body">
-                    <h5 class="card-title">Paciente: {{ turno.apellido}} {{turno.nombre}}</h5>
-                    <p class="card-text">Vacuna: {{ turno.vacuna }}</p>
-                    {% if not turno.estado == "Atendido"%}
-                    <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'marcar_vacunado' turno.idusuario turno.idvacuna turno.turnoid %}">Marcar como vacunado</a></div>
-                    {% else %}
-                    <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="#">Esta persona ya fue vacunada.</a></div>
+                        <h5 class="card-title">Paciente: {{ turno.apellido}} {{turno.nombre}}</h5>
+                        <p class="card-text">Vacuna: {{ turno.vacuna }}</p>
+                        {% if not turno.estado == "Atendido"%}
+                        <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'marcar_vacunado' turno.idusuario turno.idvacuna turno.turnoid %}">Marcar como vacunado</a></div>
+                        {% else %}
+                        <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="#">Esta persona ya fue vacunada.</a></div>
                     {%endif%}
                 </div>
                 </div>
@@ -20,4 +21,6 @@
         {% endfor%}
         </div>
     </table>
-{% endblock %}
+    {% else %} <h5> No tienes permisos para ver esta página</h5>
+    {% endif %}
+    {% endblock %}

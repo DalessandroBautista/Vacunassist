@@ -1,11 +1,12 @@
 {% extends "website/layout.html" %}
 
 {% block body %}
+{% if not request.user.es_vacunador  and not request.user.es_administrador %}
 <div class="container">
-
-  <div class="row">
+    
+    <div class="row">
     <div class="col">
-            <table>
+        <table>
                 <h1>Estos son tus próximos turnos</h1>
                 {% for un_turno in lista_turnos %}
                 <div class="col mb-5">
@@ -22,11 +23,13 @@
                 </div>
                 {% endfor  %}
             </table>
-    </div>
+        </div>
         
     </div>
-  </div>
+</div>
 
 </div>
 
- {% endblock %}
+{% else %} <h5> No tienes permisos para ver esta página</h5>
+{% endif %} 
+{% endblock %}

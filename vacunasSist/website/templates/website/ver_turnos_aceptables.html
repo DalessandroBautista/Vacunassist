@@ -1,6 +1,7 @@
 {% extends "website/layout.html" %}
 
 {% block body %}
+{% if request.user.es_administrador %} 
 <div class="container">
 
   <div class="row">
@@ -46,6 +47,9 @@
   </div>
 
 </div>
+{% else %} <h5> No tienes permisos para ver esta página</h5>
+{% endif %} 
+
 
 
  {% endblock %}
