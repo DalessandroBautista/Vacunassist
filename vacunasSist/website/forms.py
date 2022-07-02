@@ -319,21 +319,20 @@ class FormularioEmail(forms.ModelForm):
 class CargarVacunaUsuario(forms.ModelForm):
     class Meta:
         model= Historial_Vacunacion
-        fields=('fecha', 'vacuna')
-        widgets= {
-            'vacuna': forms.TextInput(
+        fields=['fecha', 'vacuna']
+        widget ={'vacuna': forms.TextInput(
                 attrs={
                     'class':'form-control',
-                    'placeholder':'Ingrese el nombre de la vacuna'
                     }
-            ),
-            'fecha': forms.DateInput(
+            ), }  
+        widgets ={'fecha': forms.DateInput(
                 attrs={
                     'class':'form-control',
                     'placeholder':'Ingrese la fecha en que se vacunó con el formato AAAA-MM-DD'
                     }
             )
             }
+        
     def save(self, usuario, vacuna,commit=True, ):
         vacuna.fecha= self.cleaned_data['fecha']
         vacuna.vacuna=self.cleaned_data['vacuna']

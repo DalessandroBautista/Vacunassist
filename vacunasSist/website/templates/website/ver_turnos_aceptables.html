@@ -34,7 +34,7 @@
 
                                     <input  class="btn btn-outline-success"  type="submit" value="Aceptar turno" style="width: 150px;">
                                   </form>
-                                  <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'cancelar_turno_usuario' un_turno.turnoid %}">Rechazar turno</a></div>
+                                  <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="#" onclick="eliminar({{un_turno.turnoid}})">Rechazar turnos</a></div>
                             </div>
                         </div>
                     </div>
@@ -47,6 +47,27 @@
   </div>
 
 </div>
+
+<script>
+  function eliminar(id){
+    Swal.fire({
+      "title": "¿Estás seguro?",
+      "text": "Esta acción no se podrá deshacer",
+      "icon":"question",
+      "showCancelButton":true,
+      "cancelButtonText":"No, salir",
+      "confirmButtonText":"Sí, rechazar",
+      "reverseButtons":true,
+      "confirmButtonColor":"#dc3545"
+    })
+    .then(function(result){
+      if(result.isConfirmed){
+        window.location.href= "cancelar_turno_usuario/"+id+"/"
+      }
+
+    })
+  }
+</script>
 {% else %} <h5> No tienes permisos para ver esta página</h5>
 {% endif %} 
 

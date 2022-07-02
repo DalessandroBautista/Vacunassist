@@ -103,7 +103,7 @@ class Offer(models.Model):
     
 class Historial_Vacunacion(models.Model):
     fecha = models.DateField(null=False)
-    vacuna = models.CharField(max_length=20)
+    vacuna=models.ForeignKey(Vacuna, on_delete=models.CASCADE,null=True)
     user = models.ForeignKey(Usuario,  on_delete=models.CASCADE, null= True)
 
     REQUIRED_FIELDS = ['date','vacuna']

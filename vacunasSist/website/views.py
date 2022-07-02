@@ -418,9 +418,6 @@ def cargarVacuna(request):
             nombre_vacuna= request.POST.get("vacuna")
             fecha=request.POST.get("fecha")
             date = parse_date(fecha)
-            print("imprimo fecha")
-            print(date)
-            print("imprimo fecha 2")
             existe= Historial_Vacunacion.objects.filter(user_id=id_usuario).filter(vacuna=nombre_vacuna).filter(fecha=date)
             print(existe)
             if cargar_vacuna_form.is_valid() and not existe:
@@ -439,7 +436,7 @@ def cargarVacuna(request):
         else:
             print('no entre al post y creo form')
             cargar_vacuna_form=CargarVacunaUsuario()
-            print('form')
+            cargar_vacuna_form.fields['vacuna'].initial = Vacuna.objects.get(id=1)
            
 
         return render(request, "website/cargar_vacuna.html",{ 'cargar_vacuna_form':cargar_vacuna_form})
