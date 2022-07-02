@@ -5,25 +5,39 @@ from website.models import Usuario, Historial_Vacunacion
 from django.forms import ModelForm
 from .models import Offer
 from django.contrib.auth.forms import AuthenticationForm
+from datetime import date
+import datetime
+from bootstrap_datepicker_plus.widgets import DateTimePickerInput
+from django.db import models
 class FormularioContacto(forms.Form):
     asunto=forms.CharField(label="Asunto",required=True)
     email=forms.EmailField(label="Emai",required=True)
     mensaje=forms.CharField(label="Contenido", widget=forms.Textarea)
 
-from bootstrap_datepicker_plus.widgets import DateTimePickerInput
-from django.db import models
 
 
-class CreateForm(forms.ModelForm):
+class TurnoConPrioridad(forms.ModelForm):
+    turno_id=forms.IntegerField(label="Turno",required=True)
+    nacimiento=forms.DateField(required=True)
+    fecha = forms.DateField(widget = forms.SelectDateWidget, label="date.today()")
+    edad=forms.IntegerField(label="Edad",required=True)
     class Meta:
         model = Offer
-        fields =[            
-            "Date",
-        ]
+        fields= ['fecha', 'vacunatorio']
+        widget ={'vacunatorio': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    }
+            ),         
+            }
+        
+    def deshabilitarCampos(self, ):
+        self.fields['edad'].widget.attrs.update({'readonly': True})
+        self.fields['nacimiento'].widget.attrs.update({'readonly': True})
+        self.fields['turno_id'].widget.attrs.update({'readonly': True})
+        return self
 
-    widgets = {
-        'Date': DateTimePickerInput(),
-    }
+
 class LoginForm(forms.Form):
     username = forms.CharField(
         label='Usuario', widget=forms.TextInput(attrs={'class': 'usuario'}), max_length=150, required=True, )
@@ -177,7 +191,6 @@ class UpdateUsuarioForm(forms.ModelForm):
             'vacunatorio': forms.TextInput(
                 attrs={
                     'class':'form-control',
-                    'placeholder':'Ingrese su nuevo nombre de usuario'
                     }
             ),         
             }

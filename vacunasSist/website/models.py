@@ -5,8 +5,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser, BaseUserManager
 
 
-class Offer(models.Model):
-    Date = models.DateField(null=True)
 
 
 class Vacuna(models.Model):
@@ -91,12 +89,17 @@ class Turno(models.Model):
     fecha =  models.DateField(null=True)
     asignado = models.BooleanField(default=False)
     estado= models.ForeignKey(EstadosTurno, on_delete=models.CASCADE)
+    vacunatorio=models.ForeignKey(Vacunatorio, on_delete=models.CASCADE,null=True)
 #    Turno.objects.filter(estado=True).filter(user__id=request.user.id)    
 
 
 class VacunaDeUsuario(models.Model):
     user= models.ForeignKey(Usuario, on_delete=models.CASCADE)
     vacuna= models.ForeignKey(Vacuna, on_delete=models.CASCADE)
+    
+class Offer(models.Model):
+    fecha = models.DateField(null=True)
+    vacunatorio=models.ForeignKey(Vacunatorio, on_delete=models.CASCADE,null=True)
     
 class Historial_Vacunacion(models.Model):
     fecha = models.DateField(null=False)

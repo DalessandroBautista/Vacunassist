@@ -13,8 +13,8 @@
                         <div class="card-body p-4">
                             <div class="text-center">
                                 <h5 class="fw-bolder">Turno aceptado para: {{ un_turno.vacuna }}</h5>
-                                <b> Debe asistir el día: {{ un_turno.fecha }}, a {{vacunatorio_preferencia}}. </b> 
-                                <b> En caso de no poder asistir ese día, cancele el turno y vuelva a solicitarlo. </b>
+                                <b> Debe asistir el día: {{ un_turno.fecha }}, a {{un_turno.vacunatorio}}, entre las 8hs y las 18hs. </b> 
+                                <div class="text-center"> <span> En caso de no poder asistir ese día, cancele el turno y vuelva a solicitarlo. </span> </div>
                                 <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'cancelar_turno_usuario' un_turno.id %}">Cancelar turno</a></div>
                             </div>
                         </div>

@@ -12,12 +12,28 @@
                     <div class="card h-100">
                         <div class="card-body p-4">
                             <div class="text-center">
-                                <h5 class="fw-bolder">Turno solicitado para: {{ un_turno.vacuna }} por el usuario: { dic[un_turno.id] }</h5>
-                                <b> Elegir turno para el día: </b> 
-                                <div> {{fecha_form.Date}} </div>
-                                
-                                <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'cancelar_turno_usuario' un_turno.id %}">Aceptar turno</a></div>
-                                <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'cancelar_turno_usuario' un_turno.id %}">Rechazar turno</a></div>
+                                <h5 class="fw-bolder">Turno solicitado para: {{ un_turno.vacuna }} por el usuario: </h5> 
+                                <li class="nav-item"><a class="navbar-brand " style="color:black" href="{% url 'ver_perfil_usuario' un_turno.idusuario %}"> {{un_turno.nombre}} {{un_turno.apellido}} </a></li>
+                                <span style="color:gray">Para ver el historial de vacunación presione el nombre de la persona y luego Ver historial de vacunación</span>
+                                    <form method="post">
+                                      <div class="form-group">
+                                        {% csrf_token %}
+                                        <p>
+                                        Fecha de nacimiento: {{ un_turno.fecha_form.nacimiento }} Edad:{{ un_turno.fecha_form.edad }} 
+                                        Número de turno: {{ un_turno.fecha_form.turno_id }} 
+                                          </p>
+                                        <b> Elegir turno para el día: </b>
+                                        <p style="color:gray">Sugerencia: {{ un_turno.mensaje }}</p>
+                                          <p>{{ un_turno.fecha_form.fecha }} </p>
+
+                                        <b> En el vacunatorio: </b>
+                                        <p style="color:gray">Por defecto se muestra el vacunatorio de preferencia de la persona</p>
+                                          <p>{{ un_turno.fecha_form.vacunatorio }} </p>
+                                      </div>
+
+                                    <input  class="btn btn-outline-success"  type="submit" value="Aceptar turno" style="width: 150px;">
+                                  </form>
+                                  <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'cancelar_turno_usuario' un_turno.turnoid %}">Rechazar turno</a></div>
                             </div>
                         </div>
                     </div>
@@ -30,12 +46,6 @@
   </div>
 
 </div>
-
-  <script>
-    $(function () {
-      $("#datetimepicker1").datetimepicker();
-    });
-  </script>
 
 
  {% endblock %}
