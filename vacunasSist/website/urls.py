@@ -35,5 +35,5 @@ urlpatterns = [
     path('aceptar_turnos',views.aceptarTurnos, name="aceptar_turnos"),
     path('rechazar_turno_usuario/<int:turno_id>/',views.RechazarTurnoUsuario, name="rechazar_turno_usuario"),
     path('ver_perfil_usuario/<int:usuario_id>/',views.verPerfilUsuario, name="ver_perfil_usuario"),
-    
+    path('ver_estadisticas',views.verEstadisticas, name="ver_estadisticas"),
 ]
