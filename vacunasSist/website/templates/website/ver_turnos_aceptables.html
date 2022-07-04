@@ -7,7 +7,9 @@
   <div class="row">
     <div class="col">
             <table>
+                {% if not modificacion%}
                 <h1>Estos son los turnos solicitados</h1>
+                {% endif %}
                 {% for un_turno in list_turnos %}
                 <div class="col mb-5">
                     <div class="card h-100">
@@ -28,13 +30,15 @@
                                           <p>{{ un_turno.fecha_form.fecha }} </p>
 
                                         <b> En el vacunatorio: </b>
+                                        {% if not modificacion%}
                                         <p style="color:gray">Por defecto se muestra el vacunatorio de preferencia de la persona</p>
-                                          <p>{{ un_turno.fecha_form.vacunatorio }} </p>
+                                        {% endif %}  
+                                        <p>{{ un_turno.fecha_form.vacunatorio }} </p>
                                       </div>
 
-                                    <input  class="btn btn-outline-success"  type="submit" value="Aceptar turno" style="width: 150px;">
+                                    <input  class="btn btn-outline-success"  type="submit" value="{{mensaje}}" style="width: 150px;">
                                   </form>
-                                  <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="#" onclick="eliminar({{un_turno.turnoid}})">Rechazar turnos</a></div>
+                                  <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="#" onclick="eliminar({{un_turno.turnoid}})">Rechazar turno</a></div>
                             </div>
                         </div>
                     </div>

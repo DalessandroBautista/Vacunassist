@@ -239,10 +239,11 @@ def solicitarTurno(request):
 def solicitarTurnoCovid(request):
     try:
         user = request.user
-        turnos=Turno.objects.filter(user_id=user.id).filter(vacuna='Covid-19')
+        vacuna= Vacuna.objects.get(nombre='Covid-19')
+        turnos=Turno.objects.filter(user_id=user.id).filter(vacuna=vacuna.id)
         print(not turnos)
         if ((((date.today().year-user.fecha_nacimiento.year)>18) &  (not turnos)) &  (user.residencia=="La Plata") ):
-            t = Turno(user=request.user, vacuna="Covid-19", estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id))
+            t = Turno(user=request.user, vacuna=vacuna, estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id))
             t.save()
             messages.success(request,"Se ha solicitado un turno la para vacuna de Covid-19 exitosamente")
             info = "Se ha solicitado un turno la para vacuna de Covid-19 exitosamente"
@@ -269,11 +270,12 @@ def solicitarTurnoGripe(request):
     # turno = Turno.objects.filter(vacuna="Covid-19").filter(username="Pappo")dc  
     try:
         user = request.user
-        turnos=Turno.objects.filter(user_id=user.id).filter(vacuna="Gripe A") 
+        vacuna= Vacuna.objects.get(nombre="Gripe A")
+        turnos=Turno.objects.filter(user_id=user.id).filter(vacuna=vacuna.id)
         print(not turnos)
         if ((not turnos) &  (user.residencia=="La Plata") ):
             messages.success(request,"Se ha solicitado un turno la para vacuna de la Gripe A exitosamente")
-            t = Turno(user=request.user, vacuna="Gripe A", estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id))
+            t = Turno(user=request.user, vacuna=vacuna, estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id))
             t.save()
         elif (turnos):
             if (turnos[0].estado==EstadosTurno.objects.get(id="4")):
@@ -294,13 +296,14 @@ def solicitarTurnoCovid2(request):
 
     try:
         user = request.user
-        turnos=Turno.objects.filter(user_id=user.id).filter(vacuna="Covid-19 2da Dosis")
-        primera_dosis= VacunaDeUsuario.objects.filter(user_id=user.id).filter(vacuna="3")
-        print(not turnos)
-        print(not primera_dosis)
+        vacuna1ra= Vacuna.objects.get(nombre="Covid-19")
+        vacuna= Vacuna.objects.get(nombre="Covid-19 2da Dosis")
+        turnos=Turno.objects.filter(user_id=user.id).filter(vacuna=vacuna.id)
+        primera_dosis= VacunaDeUsuario.objects.filter(user_id=user.id).filter(vacuna=vacuna1ra.id)
+
         if ((not turnos) &  (user.residencia=="La Plata") & (not(not primera_dosis))) :
             messages.success(request,"Se ha solicitado un turno la para vacuna de Covid-19 2da Dosis exitosamente")
-            t = Turno(user=request.user, vacuna="Covid-19 2da Dosis",estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id))
+            t = Turno(user=request.user, vacuna=vacuna,estado=EstadosTurno(id=1),  vacunatorio=Vacunatorio(id=request.user.vacunatorio_preferencia_id))
             t.save()
         elif (turnos):
             if (turnos[0].estado==EstadosTurno.objects.get(id="4")):
@@ -354,15 +357,23 @@ def verTurnosPendientes(request):
 
 def verVacunasAplicadas(request):
     try:
+        class Auxiliar():
+            def __init__(self):
+                self.vacuna = None
+                self.fecha= None
+                self.vacunaDeUsuario= None
+            
         user_id = request.user.id
         print(user_id)
         id_vacunas= VacunaDeUsuario.objects.filter(user_id=user_id)
         lista_vacunas=[]
         print(id_vacunas)
         for vacuna in id_vacunas:
-        
-            print(vacuna)
-            lista_vacunas.append(Vacuna.objects.get(id=vacuna.vacuna_id))
+            aux= Auxiliar()
+            aux.vacuna=(Vacuna.objects.get(id=vacuna.vacuna_id))
+            aux.fecha=vacuna.fecha
+            aux.vacunaDeUsuario=vacuna.id
+            lista_vacunas.append(aux)
             
         print(lista_vacunas)
         print(len(lista_vacunas))
@@ -378,12 +389,14 @@ def verVacunasAplicadas(request):
     
 def obtenerCertificado(request, vacuna_id):
     try:
-        vacuna=Vacuna.objects.get(id=vacuna_id)
+        datos=VacunaDeUsuario.objects.get(id=vacuna_id)
+        vacuna=Vacuna.objects.get(id=datos.vacuna.id)
+        fecha=datos.fecha
         buffer = io.BytesIO()
 
         p = canvas.Canvas(buffer)
 
-        mensaje= "Este documento certifica que usted se vacunó para: " + vacuna.nombre
+        mensaje= "Este documento certifica que usted se vacunó para: " + vacuna.nombre + " el día " + str(fecha)
         p.drawString(20, 20, mensaje)
 
         p.showPage()
@@ -513,13 +526,13 @@ def verTurnosdelDia(request):
             aux = Auxiliar()
             print(turno)
             print(turno.user.id)
-            vacuna=Vacuna.objects.get(nombre=turno.vacuna)
+            vacuna=Vacuna.objects.get(id=turno.vacuna.id)
             print(vacuna)
             print(vacuna.id)
             aux.turnoid=turno.id
             aux.idusuario=turno.user.id
             aux.idvacuna=vacuna.id
-            aux.vacuna=turno.vacuna
+            aux.vacuna=vacuna.nombre
             aux.nombre=user.nombre
             aux.apellido=user.apellido
             print(turno.estado)
@@ -582,6 +595,7 @@ def marcarVacunado(request,user_id,vacuna_id, turno_id):
         turno.estado=EstadosTurno.objects.get(id="4")
         vacunaUsuario.vacuna=vacuna
         vacunaUsuario.user=usuario
+        vacunaUsuario.fecha=date.today()
         vacunaUsuario.save()
         turno.save()
         messages.success(request, "El usuario se ha marcado como vacunado")
@@ -642,7 +656,10 @@ def aceptarTurnos(request):
             for turno in list_turnos:
                 user= Usuario.objects.get(id=turno.user_id)
                 aux = Auxiliar()
-                aux.vacuna=turno.vacuna
+                print(turno.vacuna)
+                vacuna=Vacuna.objects.get(id=turno.vacuna.id)
+                
+                aux.vacuna=vacuna.nombre
                 aux.turnoid=turno.id
                 aux.idusuario=user.id
                 aux.nombre=user.nombre
@@ -654,7 +671,7 @@ def aceptarTurnos(request):
                     
                 else:
                     fecha_form.fields['fecha'].initial = date.today() + datetime.timedelta(30)
-                    aux.mensaje= "Se sugiere un turno dentro de 30 días si la persona no es paciente de riersgo, dado que esta persona no es mayor de 60 años"
+                    aux.mensaje= "Se sugiere un turno dentro de 30 días si la persona no es paciente de riesgo, dado que esta persona no es mayor de 60 años"
                 fecha_nacimiento=user.fecha_nacimiento
                 fecha_actual = date.today()
                 print("1")
@@ -676,7 +693,8 @@ def aceptarTurnos(request):
                 aux.fecha_form=fecha_form
                 print(user.fecha_nacimiento)
                 arrAuxiliar.append(aux)
-            return render(request, "website/ver_turnos_aceptables.html",{"list_turnos":arrAuxiliar })
+            mensaje="Aceptar Turno"
+            return render(request, "website/ver_turnos_aceptables.html",{"list_turnos":arrAuxiliar, "mensaje": mensaje, "modificacion": False })
 
         except Exception as e:
             print(e)
@@ -711,3 +729,180 @@ def verEstadisticas (request):
         datosLocales.append(datosVacunatorio)
         datosGenerales.append(datosLocales)
     return render(request,"website/ver_estadisticas.html",{"datosGenerales":datosGenerales})
+
+
+def verTurnosAcepados(request):
+    class Auxiliar():
+            def __init__(self):
+                self.vacuna = None
+                self.idturno= None
+                self.nombre = None
+                self.fecha =None
+                self.vacunatorio=None
+                self.idusuario = None
+    arrAuxiliar = []
+    list_turnos= Turno.objects.filter(estado_id=2)
+    for turno in list_turnos:
+                user= Usuario.objects.get(id=turno.user_id)
+                aux = Auxiliar()
+                vacuna=Vacuna.objects.get(id=turno.vacuna.id)
+                aux.vacuna=vacuna.nombre
+                aux.idturno=turno.id
+                print(turno.id)
+                aux.idusuario=user.id
+                aux.nombre=user.nombre + " " + user.apellido
+                aux.fecha=turno.fecha
+                vacunatorio=Vacunatorio.objects.get(id=turno.vacunatorio_id)
+                aux.vacunatorio=vacunatorio.ubicacion
+
+                arrAuxiliar.append(aux)
+    return render(request,"website/ver_turnos_aceptados.html",{"list_turnos":arrAuxiliar})
+
+def modificarTurno(request,turno_id):
+        if(request.method=="POST"):
+            print("adentro del post")
+            try:
+                nacimiento=request.POST.get("nacimiento")
+                turno_id= request.POST.get("turno_id")
+                fecha=request.POST.get("fecha_day") + "/" + request.POST.get("fecha_month") + "/" + request.POST.get("fecha_year")
+                fechaturno=request.POST.get("fecha_year") + "-" + request.POST.get("fecha_month") + "-" + request.POST.get("fecha_day")
+                print(nacimiento)
+                print(turno_id)
+                print(fecha)
+                print(fechaturno)
+                
+                
+                print(fecha + nacimiento)
+                nacimiento=datetime.datetime.strptime(nacimiento, '%d/%m/%Y')
+                print(type(nacimiento))
+                print(type(fecha))
+                fecha=datetime.datetime.strptime(fecha, '%d/%m/%Y')
+                fecha=fecha.date()
+                
+                if ((fecha>= date.today())):
+                    print("fecha del turno" + fechaturno)
+                    turno= Turno.objects.get(id=turno_id)
+                    turno.fecha=fechaturno
+                    turno.estado_id= EstadosTurno.objects.get(id="2")
+                    vacunatorio=request.POST.get("vacunatorio")
+                    turno.vacunatorio=Vacunatorio.objects.get(id=vacunatorio)
+                    turno.save()
+                    messages.success(request, 'El turno fue modificado correctamente')
+                    return render(request, 'website/index.html')
+                else:
+                    print("entre al else")
+                    messages.error(request, 'La fecha del turno debe ser igual o posterior a la fecha de hoy')
+                    return render(request, 'website/index.html')
+            except Exception as e:
+                print(e)
+                messages.error(request, 'El turno no fue modificado porque debe ser dentro de los 7 proximos dias')
+        
+        else:
+            print("else")
+            class Auxiliar():
+                    def __init__(self):
+                        self.vacuna = None
+                        self.idvacuna=None
+                        self.turnoid= None
+                        self.idusuario=None
+                        self.nombre = None
+                        self.apellido = None
+                        self.prioridad=None
+                        self.mensaje=None
+                        self.fecha_form =None
+            
+            
+            try:
+                    turno= Turno.objects.get(id=turno_id)
+                    arrAuxiliar = []
+                    user= Usuario.objects.get(id=turno.user_id)
+                    vacunatorio=Vacunatorio.objects.get(id=turno.vacunatorio_id)
+                    aux = Auxiliar()
+                    vacuna=Vacuna.objects.get(id=turno.vacuna.id)
+                    aux.vacuna=vacuna.nombre
+                    aux.turnoid=turno.id
+                    aux.idusuario=user.id
+                    aux.nombre=user.nombre
+                    aux.apellido=user.apellido
+                    fecha_form=TurnoConPrioridad()
+                    if ((date.today().year-user.fecha_nacimiento.year)>60):
+                        aux.mensaje= "Se sugiere un turno dentro de los próximos 7 días dado que esta persona es mayor de 60 años"
+                        
+                    else:
+                        aux.mensaje= "Se sugiere un turno dentro de 30 días si la persona no es paciente de riersgo, dado que esta persona no es mayor de 60 años"
+                    fecha_nacimiento=user.fecha_nacimiento
+                    fecha_form.fields['fecha'].initial = turno.fecha
+                    fecha_actual = date.today()
+                    resultado = fecha_actual.year - fecha_nacimiento.year
+                    resultado -= ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month,fecha_nacimiento.day))
+                    fecha_form.fields['turno_id'].initial = aux.turnoid
+                    fecha_form.fields['edad'].initial = resultado
+                    fecha_form.fields['nacimiento'].initial = user.fecha_nacimiento
+                    fecha_form.fields['vacunatorio'].initial = vacunatorio
+                    fecha_form=fecha_form.deshabilitarCampos()
+                    aux.fecha_form=fecha_form
+                    arrAuxiliar.append(aux)
+                    mensaje="Modificar Turno"
+                    return render(request, "website/ver_turnos_aceptables.html",{"list_turnos":arrAuxiliar, "modificacion": True, "mensaje":mensaje })
+            except Exception as e:
+                print(e)
+
+def añadirPersona(request):
+    if(request.method=="POST"):
+        try:
+            dni=request.POST.get("user")
+            user= Usuario.objects.get(dni=dni)
+            vacuna=request.POST.get("vacuna")
+            vacunatorio=request.POST.get("vacunatorio")
+            turno= Turno()
+            vacuna=Vacuna.objects.get(id=vacuna)
+            turno.vacuna=vacuna
+            vacunatorio=Vacunatorio.objects.get(id=vacunatorio)
+            turno.vacunatorio_id=vacunatorio.id
+            turno.estado_id=4
+            turno.user_id=user.id
+            turno.fecha=date.today()
+            vacunaUsuario= VacunaDeUsuario()
+            vacunaUsuario.vacuna=vacuna
+            vacunaUsuario.user=user
+            vacunaUsuario.fecha=date.today()
+            existe=Turno.objects.filter(user_id=user.id).filter(vacuna=vacuna).filter(fecha=date.today())
+            if(not existe):
+                turno.save()
+                vacunaUsuario.save()
+                messages.success(request,"El turno fue cargado con exito")
+                return render(request,"website/index.html")
+            else:
+                messages.errir(request,"Ya existe un turno de este usuario para esta vacuna para el día de hoy")
+                return render(request,"website/index.html")
+        except Exception as e:
+            print(e)
+            form=AñadirTurnoUsuario()
+            messages.error(request, "El usuario con DNI: " + dni + " no se encuentra registrado en el sistema. Por favor registrelo y luego añadalo como vacunado.")
+            return render(request,"website/añadir_turno_persona.html",{"form":form})
+    else:
+        form=AñadirTurnoUsuario()
+        return render(request,"website/añadir_turno_persona.html",{"form":form})
+def registrarDesdeVacunador(request):
+    if request.method == 'POST':
+        form = FormularioUsuario(request.POST)
+        
+        if form.is_valid():
+            
+            mail=request.POST.get("email")         
+            form.save()
+            infoForm=form.cleaned_data
+            send_mail(
+                'VacunasSist',
+                'Tu cuenta ha sido creada exitosamente!',
+                'vacunassist2022@gmail.com',
+                [mail],
+                fail_silently=False
+            )     
+            messages.success(request, "Se has registrado al usuario exitosamente")   
+            return render(request,"website/añadir_turno_persona.html",{"form":form})
+    else:
+        form = FormularioUsuario()
+    return render(request, 'website/registration/registro_desde_vacunador.html', {
+        'form': form
+        })

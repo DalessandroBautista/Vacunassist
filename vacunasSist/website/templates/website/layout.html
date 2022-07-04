@@ -67,7 +67,17 @@
                                 {% endif %}
                                 {% endcomment %}
                                 {% if  request.user.es_administrador%}
-                                    <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'aceptar_turnos' %}">Ver turnos solicitados</a></li>
+                                    <a class="nav-item navbar-brand mx-8 dropdown-toggle" id="navbarDropdown" style="color:white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="true">Ver turnos</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'aceptar_turnos' %}">Ver turnos solicitados</a></li>
+                                        <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_turnos_aceptados' %}">Ver turnos aceptados</a></li>
+                                    </ul>
+                                    <a class="nav-item navbar-brand mx-8 dropdown-toggle" id="navbarDropdown" style="color:white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="true">Vacunadores</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'aceptar_turnos' %}">Ver vacunadores</a></li>
+                                        <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_turnos_aceptados' %}">Añadir vacunador</a></li>
+                                    </ul> 
+                                    
                                     <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'ver_estadisticas' %}">Ver estadisticas</a></li>
                                     {% endif %}
                             {% endif %}

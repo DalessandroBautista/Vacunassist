@@ -1,0 +1,27 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+<div style="margin-left: 10px; ">
+
+    <form method="post">
+        <div class="form-group">
+          {% csrf_token %}
+            <a>DNI de la persona: {{form.user}}</a>
+            <a>Vacuna: {{form.vacuna}}</a>
+            <a>Vacunatorio: {{form.vacunatorio}}</a>
+              {% for error in campo.errors %}
+                <p style="color: red">{{ error }}</p>
+              {% endfor %}
+            </p>
+          {% if  request.user.es_vacunador %}
+                <input  class="btn btn-outline-success"  type="submit" value="Añadir persona" style="width: 150px;">
+                
+                <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'index' %}">Cancelar</a></div>
+                
+              </div>
+            {% endif%}
+        </div>
+        
+      </form>
+    </div>
+{% endblock %}

@@ -85,9 +85,8 @@ class EstadosTurno(models.Model):
         
 class Turno(models.Model):
     user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    vacuna = models.CharField(max_length=20)
+    vacuna = models.ForeignKey(Vacuna,on_delete=models.CASCADE)
     fecha =  models.DateField(null=True)
-    asignado = models.BooleanField(default=False)
     estado= models.ForeignKey(EstadosTurno, on_delete=models.CASCADE)
     vacunatorio=models.ForeignKey(Vacunatorio, on_delete=models.CASCADE,null=True)
 #    Turno.objects.filter(estado=True).filter(user__id=request.user.id)    
@@ -96,6 +95,7 @@ class Turno(models.Model):
 class VacunaDeUsuario(models.Model):
     user= models.ForeignKey(Usuario, on_delete=models.CASCADE)
     vacuna= models.ForeignKey(Vacuna, on_delete=models.CASCADE)
+    fecha=models.DateField(null=True)
     
 class Offer(models.Model):
     fecha = models.DateField(null=True)

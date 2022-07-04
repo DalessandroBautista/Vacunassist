@@ -15,7 +15,7 @@
                       <p class="card-text">{{ vacuna.fecha }}</p>
                       {% if not request.user.es_vacunador%}
                         {% if not request.user.es_administrador%}
-                          <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'eliminar_vacuna_usuario' vacuna.id %}">Eliminar vacuna</a></div>
+                          <div class="nav-item"><a class="btn btn-outline-dark mt-auto" onclick="eliminar({{vacuna.id}})" href="#">Eliminar vacuna</a></div>
                         {%endif%}
                       {%endif%}
                         </div>
@@ -29,5 +29,24 @@
   </div>
 
 </div>
+<script>
+  function eliminar(id){
+    Swal.fire({
+      "title": "¿Estás seguro?",
+      "text": "Esta acción no se podrá deshacer",
+      "icon":"question",
+      "showCancelButton":true,
+      "cancelButtonText":"No, salir",
+      "confirmButtonText":"Sí, eliminar",
+      "reverseButtons":true,
+      "confirmButtonColor":"#dc3545"
+    })
+    .then(function(result){
+      if(result.isConfirmed){
+        window.location.href= "eliminar_vacuna_usuario/"+id+"/"
+      }
 
+    })
+  }
+</script>
  {% endblock %}

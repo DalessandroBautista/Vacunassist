@@ -36,4 +36,8 @@ urlpatterns = [
     path('rechazar_turno_usuario/<int:turno_id>/',views.RechazarTurnoUsuario, name="rechazar_turno_usuario"),
     path('ver_perfil_usuario/<int:usuario_id>/',views.verPerfilUsuario, name="ver_perfil_usuario"),
     path('ver_estadisticas',views.verEstadisticas, name="ver_estadisticas"),
+    path('ver_turnos_aceptados', views.verTurnosAcepados, name="ver_turnos_aceptados"),
+    path('modificar_turno/<int:turno_id>/', views.modificarTurno, name="modificar_turno"),
+    path('añadir_persona', views.añadirPersona, name="añadir_persona"),
+    path('registrar_desde_vacunador', views.registrarDesdeVacunador, name="registrar_desde_vacunador"),
 ]

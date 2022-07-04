@@ -1,0 +1,62 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+{% if request.user.es_administrador %} 
+<div class="container">
+
+  <div class="row">
+    <div class="col">
+            <table>
+                <h1>Estos son los turnos aceptados</h1>
+                {% for un_turno in list_turnos %}
+                <div class="col mb-5">
+                    <div class="card h-100">
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder">Turno de: {{ un_turno.vacuna }} para:  </h5>
+                                <li class="nav-item"><a class="navbar-brand " style="color:black" href="{% url 'ver_perfil_usuario' un_turno.idusuario %}"> {{un_turno.nombre}} </a></li>
+
+                                <b> En el vacunatorio: {{ un_turno.vacunatorio}}, </b>
+                                <b>el día: {{un_turno.fecha}} </b>
+                                <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="#" onclick="eliminar({{un_turno.idturno}})">Cancelar turno</a></div>
+                                <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'modificar_turno' un_turno.idturno %}" >Modificar turno</a></div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor  %}
+            </table>
+    </div>
+        
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function eliminar(id){
+    Swal.fire({
+      "title": "¿Estás seguro?",
+      "text": "Esta acción no se podrá deshacer",
+      "icon":"question",
+      "showCancelButton":true,
+      "cancelButtonText":"No, salir",
+      "confirmButtonText":"Sí, cancelar",
+      "reverseButtons":true,
+      "confirmButtonColor":"#dc3545"
+    })
+    .then(function(result){
+      if(result.isConfirmed){
+        window.location.href= "cancelar_turno_usuario/"+id+"/"
+      }
+
+    })
+  }
+</script>
+{% else %} <h5> No tienes permisos para ver esta página</h5>
+{% endif %} 
+
+
+
+ {% endblock %}

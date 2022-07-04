@@ -13,8 +13,9 @@
                     <div class="card h-100">
                         <div class="card-body p-4">
                             <div class="text-center">
-                                <h5 class="fw-bolder">{{ una_vacuna.nombre }}</h5>
-                                <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'certificado' una_vacuna.id %}">Obtener certificado de vacunación</a></div>
+                                <h5 class="fw-bolder">Vacuna de: {{ una_vacuna.vacuna.nombre }}</h5>
+                                <a>El día: {{una_vacuna.fecha}}</a>
+                                <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'certificado' una_vacuna.vacunaDeUsuario %}">Obtener certificado de vacunación</a></div>
                             </div>
                         </div>
                     </div>

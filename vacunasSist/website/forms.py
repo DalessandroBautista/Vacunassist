@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from website.models import Usuario, Historial_Vacunacion
+from website.models import Usuario, Historial_Vacunacion, Turno
 from django.forms import ModelForm
 from .models import Offer
 from django.contrib.auth.forms import AuthenticationForm
@@ -339,3 +339,17 @@ class CargarVacunaUsuario(forms.ModelForm):
         vacuna.user=usuario
         vacuna.save()
         return vacuna
+
+
+class AñadirTurnoUsuario(forms.ModelForm):
+    fecha = forms.DateField(widget = forms.SelectDateWidget, label="date.today()")
+    class Meta:
+        model=Turno
+        fields=['user','vacuna','estado','vacunatorio']
+        widgets ={'user': forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese el DNI del usuario'
+                    }
+            ),
+        }
