@@ -1,11 +1,103 @@
 {% extends "website/layout.html" %}
 
 {% block body %}
-<div  style="color:black">
-   <h5 style= "text-align: center">Requisitos para solicitar un turno:</h5>
-    <p style= "text-align: center">Debe tener su identidad verificada</p>
-    <p style= "text-align: center"> También debe tener residencia en 'La Plata' </p>
-    <img src="static\img\24382.jpg" >
+<div  style="color:black; background-color: #96ce7b;">
+  
+    <img src="static\img\requisitos.png" width="700" height="850" style="float:right" >
+    <div><video src="\static\img\volante.mp4"  style="float:inline-start" width="640" height="850"></video></div>
+
+</div>
+
+<div class="pane-content" style= "text-align: center">
+    <h2>¿Porqué es importante estar vacunados?</h2>
+<style>
+
+.card-recursos {
+height: 430px;
+-webkit-box-shadow: -1px 3px 19px -1px rgba(0,0,0,0.16);
+    -moz-box-shadow: -1px 3px 19px -1px rgba(0,0,0,0.16);
+    box-shadow: -1px 3px 19px -1px rgba(0,0,0,0.16);
+border: none;
+}
+
+.fila-iconos__icono-texto {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+.icono-texto__texto {
+    font-family: 'CHANEWEI', sans-serif;
+    font-size: 20px;
+    width: 280px;
+    margin: auto;
+    color: #717170;
+    margin-top: 40px;
+}
+
+.titular-pasos {
+    margin-bottom: 40px;
+    font-size: 32px;
+margin-top: 60px;
+}
+
+.card__imagen__logo {
+    width: 75px;
+}
+
+.cards {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    -webkit-box-shadow: -1px 3px 19px -1px rgba(0,0,0,0.16);
+    -moz-box-shadow: -1px 3px 19px -1px rgba(0,0,0,0.16);
+    box-shadow: -1px 3px 19px -1px rgba(0,0,0,0.16);
+    margin-bottom: 20px;
+}
+
+.card__texto {
+    margin-left: 20px;
+}
+
+.link-card {
+    text-decoration: none!important;
+    color: #333333!important;
+}
+
+.fila-iconos {
+margin-top: 60px;
+}
+</style>
+
+<!--Iconos parte superior-->
+    <div class="row fila-iconos">
+        <div
+          class="fila-iconos__icono-texto col-xs-12 col-sm-6 col-md-3 col-lg-3" >
+          <img class="icono-texto__icono" src="static\img\hospital_1.png"  alt="icono" />
+          <p class="icono-texto__texto">Previene las enfermedades y complicaciones graves.</p>
+        </div>
+
+        <div
+          class="fila-iconos__icono-texto col-xs-12 col-sm-6 col-md-3 col-lg-3" >
+          <img class="icono-texto__icono" src="static\img\vacuna05_0.png" />
+          <p class="icono-texto__texto">El cerdificado es requerido para el ingreso escolar, o cambio de pediatra.</p>
+        </div>
+
+        <div
+          class="fila-iconos__icono-texto col-xs-12 col-sm-6 col-md-3 col-lg-3" >
+          <img class="icono-texto__icono" src="static\img\inmunizacion05_0.png" alt="icono" />
+          <p class="icono-texto__texto">La inmunización protege a otras personas. </p>
+         </div>
+
+         <div
+          class="fila-iconos__icono-texto col-xs-12 col-sm-6 col-md-3 col-lg-3" >
+          <img class="icono-texto__icono" src="static\img\solidaridad05_0.png" alt="icono" />
+          <p class="icono-texto__texto">La vacunación es un acto responsable y solidario. </p>
+        </div>
+    </div>
+
+
+
 </div>
 
  
