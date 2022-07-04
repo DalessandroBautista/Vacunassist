@@ -707,7 +707,7 @@ def verEstadisticas (request):
         for vacuna in vacunas:
             datosVacuna = []
             valor=0
-            turno = Turno.objects.filter(vacuna=vacuna.nombre).filter(vacunatorio_id=vacunatorio.id).filter(estado_id=4)
+            turno = Turno.objects.filter(vacuna_id=vacuna.id).filter(vacunatorio_id=vacunatorio.id).filter(estado_id=4)
             if (turno):
                 valor = len(turno)
             datosVacuna.append(vacuna.nombre)
@@ -870,7 +870,7 @@ def añadirPersona(request):
             vacunaUsuario.vacuna=vacuna
             vacunaUsuario.user=user
             vacunaUsuario.fecha=date.today()
-            existe=Turno.objects.filter(user_id=user.id).filter(vacuna=vacuna).filter(fecha=date.today())
+            existe=Turno.objects.filter(user_id=user.id).filter(vacuna_id=vacuna.id).filter(fecha=date.today())
             if(not existe):
                 turno.save()
                 vacunaUsuario.save()
