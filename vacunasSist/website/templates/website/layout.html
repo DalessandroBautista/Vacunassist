@@ -38,8 +38,8 @@
                         <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'requisitos_vacunas' %}">Requisitos</a></li>
                     {% endif %}    
                         {% if request.user.is_authenticated %}
+                        <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'verPerfil' %}">Ver perfil</a></li>
                             {% if not request.user.es_vacunador and not request.user.es_administrador%}
-                                <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'verPerfil' %}">Ver perfil</a></li>
                                 {% if request.user.identidad_verificada  %} 
                                     <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'solicitar_turno' %}">Solicitar turno</a></li>
                                     <a class="nav-item navbar-brand mx-8 dropdown-toggle" id="navbarDropdown" style="color:white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Ver turnos</a>

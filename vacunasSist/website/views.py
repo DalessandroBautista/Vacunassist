@@ -146,8 +146,11 @@ def verPerfil(request):
         usuario= Usuario.objects.get(id=id_usuario)
         
         if request.method=="POST":
-            print('entre al post y creo form')
-            usuario_form =UpdateUsuarioForm(request.POST, instance = usuario)
+            if(usuario.es_vacunador==True):
+                usuario_form =UpdateVacunadorAdministradorForm(request.POST, instance = usuario)
+            else:
+                usuario_form =UpdateUsuarioForm(request.POST, instance = usuario)
+
             if usuario_form.is_valid():
                 try:
                     print('antes de guardar datos')
@@ -160,12 +163,24 @@ def verPerfil(request):
                     messages.error(request, 'Su perfil no se ha actualizado.')
            
         else:
-            print('no entre al post y creo form')
-            usuario_form=UpdateUsuarioForm(instance = usuario)
-            print('form')
-            usuario_form=usuario_form.deshabilitarCampos(usuario.identidad_verificada)
-        print(id_usuario)
-        return render(request, "website/verPerfil.html",{ 'usuario_form':usuario_form, 'id_usuario':id_usuario})
+            id_usuario=request.user.id
+            mismoUsuario= (id_usuario == usuario.id)
+            print("1")
+            if(usuario.es_vacunador==True or usuario.es_administrador==True):
+                usuario_form=UpdateVacunadorAdministradorForm(instance = usuario)
+                if(usuario.es_administrador==True):
+                    print("administrador")
+                    usuario_form=usuario_form.deshabilitarCamposAdminstrador()
+                   
+                else:
+                    print("vacunador")
+                    usuario_form=usuario_form.deshabilitarCampos()
+                return render(request, "website/ver_perfil_vacunador.html",{ 'usuario_form':usuario_form, 'id_usuario':id_usuario,'mismoUsuario':mismoUsuario})
+            else:
+                usuario_form=UpdateUsuarioForm(instance = usuario)
+                usuario_form=usuario_form.deshabilitarCampos(usuario.identidad_verificada)
+
+        return render(request, "website/verPerfil.html",{ 'usuario_form':usuario_form, 'id_usuario':id_usuario, 'mismoUsuario':mismoUsuario})
     except Exception as e: 
             print(repr(e))
 
@@ -325,13 +340,13 @@ def verTurnos(request):
     try:
         user_id = request.user.id
         usuario= Usuario.objects.get(id=user_id)
-        vacunatorio_preferencia= usuario.vacunatorio_preferencia
+        vacunatorio= usuario.vacunatorio_preferencia
         lista_turnos= Turno.objects.filter(user_id=user_id).filter(estado=2)
         print(lista_turnos)
         if (lista_turnos):
             return render(request, 'website/ver_turnos.html', {
                 'lista_turnos':lista_turnos,
-                'vacunatorio_preferencia':vacunatorio_preferencia
+                'vacunatorio':vacunatorio
             })
         else:
             messages.error(request, 'Usted no tiene turnos aceptados ')
@@ -553,19 +568,25 @@ def verTurnosdelDia(request):
         })
 def buscar(request):
     if request.GET["dni"]:
+        usuarioActualId=request.user.id
         try:
             dni=request.GET.get("dni")
             dni.strip()
             print (dni)
             usuario=Usuario.objects.get(dni=dni)
-            usuario_form=UpdateUsuarioForm(instance = usuario)
-            usuario_form=usuario_form.deshabilitarCamposVacunador()
-            id_usuario=usuario.id
-            if not usuario:
-                messages.error(request, "No se encontró un usuario con ese DNI")
-
-            usuario=Usuario.objects.filter(dni=dni)
-            return render(request, "website/verPerfil.html",{"usuario_form": usuario_form, 'id_usuario':id_usuario })
+            mismoUsuario= (usuarioActualId==usuario.id)
+            if(usuario.es_vacunador ==True):
+                usuario_form=UpdateVacunadorAdministradorForm(instance = usuario)
+                usuario_form=usuario_form.deshabilitarCamposAdministrador()
+                id_usuario=usuario.id
+                return render(request, "website/ver_perfil_vacunador.html",{"usuario_form": usuario_form, 'id_usuario':id_usuario, 'mismoUsuario':mismoUsuario})
+            else:
+                
+                usuario_form=UpdateUsuarioForm(instance = usuario)
+                usuario_form=usuario_form.deshabilitarCamposVacunador()
+                id_usuario=usuario.id
+                usuario=Usuario.objects.filter(dni=dni)
+                return render(request, "website/verPerfil.html",{"usuario_form": usuario_form, 'id_usuario':id_usuario })
         except Exception as e:
             print(repr(e))   
             messages.error(request, "No se encontró un usuario con ese DNI")
@@ -738,7 +759,7 @@ def verEstadisticas (request):
     #Toda esta parte es para listar vacunadores
     datosVacunadores = []
     for vacunatorio in vacunatorios: 
-        vacunadores = Usuario.objects.filter(vacunatorio_preferencia_id=vacunatorio.id).filter(es_vacunador=True)
+        vacunadores = Usuario.objects.filter(vacunatorio_id=vacunatorio.id).filter(es_vacunador=True)
         datosLocales = []
         datosLocales.append(vacunatorio.nombre+" en "+vacunatorio.ubicacion)
         if (vacunadores):
@@ -930,3 +951,10 @@ def registrarDesdeVacunador(request):
     return render(request, 'website/registrar_desde_vacunador.html', {
         'form': form
         })
+
+def eliminarVacunador(request, id_usuario):
+    user= Usuario.objects.get(id=id_usuario)
+    user.delete()
+    messages.success(request, "El vacunador fue eliminado con exito")
+    return render(request,"website/index.html")
+    

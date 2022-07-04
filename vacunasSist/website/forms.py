@@ -234,7 +234,7 @@ class UpdateUsuarioForm(forms.ModelForm):
         user.identidad_verificada= self.cleaned_data['identidad_verificada']
         user.fecha_nacimiento= self.cleaned_data['fecha_nacimiento']
         user.residencia= self.cleaned_data['residencia']
-        user.vacunatorio_preferencia= self.cleaned_data['vacunatorio_preferencia']
+        user.vacunatorio= self.cleaned_data['vacunatorio']
         user.save()
         """
         return user
@@ -353,3 +353,66 @@ class AñadirTurnoUsuario(forms.ModelForm):
                     }
             ),
         }
+        
+
+class UpdateVacunadorAdministradorForm(forms.ModelForm):
+    class Meta:
+        model= Usuario
+        fields=('email', 'nombre', 'apellido', 'dni', 'fecha_nacimiento', 'vacunatorio_preferencia',)
+        widgets= {
+            'email': forms.EmailInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su email'
+                    }
+            ),
+            'nombre': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su nombre'
+                    }
+            ),
+            'apellido': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su apellido'
+                    }
+            ),
+            'dni': forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su DNI'
+                    }
+            ),
+            'fecha_nacimiento': forms.DateInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder':'Ingrese su fecha de nacimiento'
+                    }
+            ),
+            }
+    def deshabilitarCampos(self):
+            self.fields['dni'].widget.attrs.update({'readonly': True})
+            self.fields['email'].widget.attrs.update({'readonly': True})
+            self.fields['fecha_nacimiento'].widget.attrs.update({'readonly': True})
+            self.fields['nombre'].widget.attrs.update({'readonly': True})
+            self.fields['apellido'].widget.attrs.update({'readonly': True})
+            #self.fields['nombre'].disabled = True
+            return self
+    def deshabilitarCamposAdministrador(self):
+            self.fields['dni'].widget.attrs.update({'readonly': True})
+            self.fields['email'].widget.attrs.update({'readonly': True})
+            self.fields['fecha_nacimiento'].widget.attrs.update({'readonly': True})
+            self.fields['nombre'].widget.attrs.update({'readonly': True})
+            self.fields['apellido'].widget.attrs.update({'readonly': True})
+            self.fields['vacunatorio_preferencia'].widget.attrs.update({'disabled': True})
+            #self.fields['nombre'].disabled = True
+            return self
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        #user.set_password(self.cleaned_data['password1'])
+        if commit:
+            user.save()
+
+        return user
+

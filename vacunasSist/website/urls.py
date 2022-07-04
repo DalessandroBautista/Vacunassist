@@ -43,4 +43,5 @@ urlpatterns = [
     path('usuario_ausente/<int:turno_id>',views.usuarioAusente, name="usuario_ausente"),
     path('usuario_no_ausente/<int:turno_id>',views.usuarioNoAusente, name="usuario_no_ausente"),
     path('ver_perfil_vacunador/<int:usuario_id>/',views.verPerfilVacunador, name="ver_perfil_vacunador"),
+    path('busqueda/eliminar_vacunador/<int:id_usuario>/',views.eliminarVacunador, name="eliminar_vacunador"),
 ]

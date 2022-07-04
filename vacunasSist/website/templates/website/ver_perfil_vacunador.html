@@ -1,0 +1,48 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+<div style="margin-left: 10px; ">
+
+    <form method="post">
+        <div class="form-group">
+          {% csrf_token %}
+          <p>Email: {{usuario_form.email}}</p>
+          <p>Nombre:{{usuario_form.nombre}}</p>
+          <p>Apellido:{{usuario_form.apellido}}</p>
+          <p>DNI:{{usuario_form.dni}}</p>
+          <p>Fecha de nacimiento:{{usuario_form.fecha_nacimiento}}</p>
+          <p>Vacunatorio de trabajo:{{usuario_form.vacunatorio_preferencia}}</p>
+          {% if mismoUsuario %}
+            <input  class="btn btn-outline-success"  type="submit" value="Editar" style="width: 150px;">
+            <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'modificar_password' %}">Modificar contraseña</a></div>
+                
+          {% endif%}
+          {% if request.user.es_administrador %} 
+          <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="#" onclick="eliminar({{id_usuario}})">Eliminar vacunador</a></div>
+          {%endif%}
+        </div>
+        
+      </form>
+    </div>
+
+  <script>
+      function eliminar(id){
+        Swal.fire({
+          "title": "¿Estás seguro?",
+          "text": "Esta acción no se podrá deshacer",
+          "icon":"question",
+          "showCancelButton":true,
+          "cancelButtonText":"No, salir",
+          "confirmButtonText":"Sí, eliminar",
+          "reverseButtons":true,
+          "confirmButtonColor":"#dc3545"
+        })
+        .then(function(result){
+          if(result.isConfirmed){
+            window.location.href= "eliminar_vacunador/"+id+"/"
+          }
+    
+        })
+      }
+    </script>
+{% endblock %}
