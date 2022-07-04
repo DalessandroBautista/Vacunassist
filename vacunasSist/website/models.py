@@ -65,6 +65,8 @@ class Usuario(AbstractBaseUser):
     identidad_verificada=models.BooleanField(default=False)
     es_vacunador = models.BooleanField(default=False)
     es_administrador = models.BooleanField(default=False)
+    telefono = models.IntegerField(blank=True, null=True)
+    direccion = models.CharField(max_length=15)
     objects= UsuarioManager()
     
     USERNAME_FIELD = 'username'
