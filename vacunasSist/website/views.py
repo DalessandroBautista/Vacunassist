@@ -613,11 +613,13 @@ def verPerfilUsuario(request, usuario_id):
         
 def marcarVacunado(request,user_id,vacuna_id, turno_id):
     try:
+        vacunador_id=request.user.id
         vacunaUsuario= VacunaDeUsuario()
         vacuna=Vacuna.objects.get(id=vacuna_id)
         usuario=Usuario.objects.get(id=user_id)
         turno=Turno.objects.get(id=turno_id)
         turno.estado=EstadosTurno.objects.get(id="4")
+        turno.vacunador=Usuario.objects.get(id=vacunador_id)
         vacunaUsuario.vacuna=vacuna
         vacunaUsuario.user=usuario
         vacunaUsuario.fecha=date.today()

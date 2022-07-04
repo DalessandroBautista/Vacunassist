@@ -91,6 +91,7 @@ class Turno(models.Model):
     fecha =  models.DateField(null=True)
     estado= models.ForeignKey(EstadosTurno, on_delete=models.CASCADE)
     vacunatorio=models.ForeignKey(Vacunatorio, on_delete=models.CASCADE,null=True)
+    vacunador= models.ForeignKey(Usuario, related_name='vacunador', on_delete=models.CASCADE,null=True)
 #    Turno.objects.filter(estado=True).filter(user__id=request.user.id)    
 
 
