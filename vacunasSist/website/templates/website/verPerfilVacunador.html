@@ -1,0 +1,28 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+<div  style="color:black">
+   <strong style="font-size:2rem">Nombre y apellido:   </strong>
+   <span style="font-size:2rem"> {{vacunador.nombre}}  {{vacunador.apellido}}</span>
+   <br>
+   <strong style="font-size:2rem">Email:   </strong>
+   <span style="font-size:2rem"> {{vacunador.email}}</span>
+   <br>
+   <strong style="font-size:2rem">DNI:   </strong>
+   <span style="font-size:2rem"> {{vacunador.dni}}</span>
+   <br>
+   <strong style="font-size:2rem">Fecha de nacimiento:   </strong>
+   <span style="font-size:2rem"> {{vacunador.fecha_nacimiento}}</span>
+   <br>
+   <strong style="font-size:2rem">Vacunatorio asignado:   </strong>
+   <span style="font-size:2rem"> {{vacunador.vacunatorio_preferencia.nombre}} en {{vacunador.vacunatorio_preferencia.ubicacion}}</span>
+   <br>
+   <strong style="font-size:2rem">Telefono:   </strong>
+   <span style="font-size:2rem"> Nada</span>
+   <br>
+   <strong style="font-size:2rem">Direccion:   </strong>
+   <span style="font-size:2rem"> Nada</span>
+</div>
+
+ 
+ {% endblock %}
