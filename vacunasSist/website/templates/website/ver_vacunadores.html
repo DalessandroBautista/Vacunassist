@@ -1,0 +1,29 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+{% if request.user.es_administrador %} 
+<div class="container">
+  
+  <div class="row">
+      <div class="col">
+       {% for vacunatorio in datosVacunadores %}
+       <li><a>{{vacunatorio.nombre}} {{vacunatorio.ubicacion}}</a>
+        {% for datos in vacunatorio %}
+        
+          {% if datos.nombre %}
+            <a>, Nombre:  </a> <a href="{% url 'ver_perfil_vacunador' datos.id %}">{{datos.nombre}} {{datos.apellido}}</a> <a>, DNI: {{datos.dni}}</a>
+          {% else %}
+
+            <a>{{datos}}</a>
+          {% endif %}
+        {% endfor %}
+        </li>
+       {% endfor %}
+      </div>
+
+    </div>
+    </div>
+    {% else %} <h5> No tienes permisos para ver esta página</h5>
+    {% endif %}
+    {% endblock %}
+    

@@ -175,7 +175,7 @@ def verPerfil(request):
                 else:
                     print("vacunador")
                     usuario_form=usuario_form.deshabilitarCampos()
-                return render(request, "website/ver_perfil_vacunador.html",{ 'usuario_form':usuario_form, 'id_usuario':id_usuario,'mismoUsuario':mismoUsuario})
+                return render(request, "website/ver_perfil_vacunador.html",{ 'usuario_form':usuario_form, 'id_usuario':id_usuario,'mismoUsuario':mismoUsuario, 'busqueda': False})
             else:
                 usuario_form=UpdateUsuarioForm(instance = usuario)
                 usuario_form=usuario_form.deshabilitarCampos(usuario.identidad_verificada)
@@ -579,7 +579,7 @@ def buscar(request):
                 usuario_form=UpdateVacunadorAdministradorForm(instance = usuario)
                 usuario_form=usuario_form.deshabilitarCamposAdministrador()
                 id_usuario=usuario.id
-                return render(request, "website/ver_perfil_vacunador.html",{"usuario_form": usuario_form, 'id_usuario':id_usuario, 'mismoUsuario':mismoUsuario})
+                return render(request, "website/ver_perfil_vacunador.html",{"usuario_form": usuario_form, 'id_usuario':id_usuario, 'mismoUsuario':mismoUsuario, 'busqueda':True})
             else:
                 
                 usuario_form=UpdateUsuarioForm(instance = usuario)
@@ -771,16 +771,47 @@ def verEstadisticas (request):
         datosVacunadores.append(datosLocales)
         
     return render(request,"website/ver_estadisticas.html",{"datosGenerales":datosGenerales, "datosVacunadores":datosVacunadores})
-
+def verVacunadores(request):
+    vacunatorios=Vacunatorio.objects.all()
+    datosVacunadores = []
+    for vacunatorio in vacunatorios: 
+        vacunadores = Usuario.objects.filter(vacunatorio_preferencia_id=vacunatorio.id).filter(es_vacunador=True)
+        datosLocales = []
+        datosLocales.append(vacunatorio.nombre+" en "+vacunatorio.ubicacion)
+        if (vacunadores):
+            for vacunador in vacunadores:
+                datosLocales.append(vacunador)
+        else:
+            datosLocales.append('Sin vacunadores en este vacunatorio')
+        datosVacunadores.append(datosLocales)
+        
+    return render(request,'website/ver_vacunadores.html',{'datosVacunadores':datosVacunadores})
+    
+    
 def verPerfilVacunador(request, usuario_id):
     usuario=Usuario.objects.get(id=usuario_id)
-    id_usuario=usuario.id
-    mismoUsuario=False
-    usuario_form=UpdateVacunadorAdministradorForm(instance = usuario)
-               
-    usuario_form=usuario_form.deshabilitarCamposAdministrador()
-     
-    return render(request, "website/ver_perfil_vacunador.html",{ 'usuario_form':usuario_form, 'id_usuario':id_usuario,'mismoUsuario':mismoUsuario})
+    if request.method=="POST":
+            
+            usuario_form =UpdateVacunadorAdministradorForm(request.POST, instance = usuario)
+
+            if usuario_form.is_valid():
+                try:
+                    print('antes de guardar datos')
+                    usuario_form.save()
+                    print('en guardar datos')
+                    messages.success(request, 'Perfil actualizado correctamente')
+                    return redirect('index')
+                except Exception as e: 
+                    print(repr(e))
+                    messages.error(request, 'El perfil no se ha actualizado.')
+    else:
+        id_usuario=usuario.id
+        mismoUsuario=False
+        usuario_form=UpdateVacunadorAdministradorForm(instance = usuario)
+                
+        usuario_form=usuario_form.deshabilitarCampos()
+        
+    return render(request, "website/ver_perfil_vacunador.html",{ 'usuario_form':usuario_form, 'id_usuario':id_usuario,'mismoUsuario':mismoUsuario, 'busqueda': False})
 
 def verTurnosAcepados(request):
     class Auxiliar():

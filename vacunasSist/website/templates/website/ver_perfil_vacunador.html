@@ -12,8 +12,10 @@
           <p>DNI:{{usuario_form.dni}}</p>
           <p>Fecha de nacimiento:{{usuario_form.fecha_nacimiento}}</p>
           <p>Vacunatorio de trabajo:{{usuario_form.vacunatorio_preferencia}}</p>
+          {% if not busqueda%}
+          <input  class="btn btn-outline-success"  type="submit" value="Editar" style="width: 150px;">
+          {% endif%}
           {% if mismoUsuario %}
-            <input  class="btn btn-outline-success"  type="submit" value="Editar" style="width: 150px;">
             <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'modificar_password' %}">Modificar contraseña</a></div>
                 
           {% endif%}
