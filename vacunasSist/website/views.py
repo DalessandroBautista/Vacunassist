@@ -494,22 +494,7 @@ def CancelarTurnoUsuario(request,turno_id):
 
 #ver turnos del dia
 def verTurnosdelDia(request):
-    # try:
-    #     #list_turnos = Turno.objects.filter(fecha=datetime.date.today())
-    #     list_turnos = Turno.objects.all()
-
-    #     #return render(request, 'website/ver_turnos_delDia.html', {'list_turnos':list_turnos, 'fechaHoy':datetime.date.today()})
-    #     #return render(request, 'website/ver_turnos_delDia.html', {})
-    #     if (list_turnos):
-    #         return render(request, 'website/ver_turnos_delDia.html', {
-    #             'list_turnos':list_turnos
-    #         })
-    #     else:
-    #         messages.error(request, 'No hay turnos del dia de hoy')
-    #         return render(request, 'website/index.html',{})
-    # except Exception as e:
-    #     print(repr(e))
-    list_turnos = Turno.objects.filter(fecha=datetime.date.today())
+    list_turnos = Turno.objects.filter(fecha=datetime.date.today()).filter(vacunatorio_id=request.user.vacunatorio_preferencia_id)
     class Auxiliar():
         def __init__(self):
             self.vacuna = None
@@ -710,6 +695,8 @@ def RechazarTurnoUsuario(request,turno_id):
         messages.error(request, 'El turno no pudo ser rechazado')
 
 def verEstadisticas (request):
+    
+    #Toda esta parte es para las estadisticas
     vacunas = Vacuna.objects.all()
     vacunatorios = Vacunatorio.objects.all()
     datosGenerales = []
@@ -721,15 +708,32 @@ def verEstadisticas (request):
             datosVacuna = []
             valor=0
             turno = Turno.objects.filter(vacuna=vacuna.nombre).filter(vacunatorio_id=vacunatorio.id).filter(estado_id=4)
-            if (turno is not None):
+            if (turno):
                 valor = len(turno)
             datosVacuna.append(vacuna.nombre)
             datosVacuna.append(valor)
             datosVacunatorio.append(datosVacuna)
         datosLocales.append(datosVacunatorio)
         datosGenerales.append(datosLocales)
-    return render(request,"website/ver_estadisticas.html",{"datosGenerales":datosGenerales})
+        
+    #Toda esta parte es para listar vacunadores
+    datosVacunadores = []
+    for vacunatorio in vacunatorios: 
+        vacunadores = Usuario.objects.filter(vacunatorio_preferencia_id=vacunatorio.id).filter(es_vacunador=True)
+        datosLocales = []
+        datosLocales.append(vacunatorio.nombre+" en "+vacunatorio.ubicacion)
+        if (vacunadores):
+            datosLocales.append(vacunadores)
+        else:
+            datosLocales.append(['Sin vacunadores en este vacunatorio'])
+        datosVacunadores.append(datosLocales)
+        
+    return render(request,"website/ver_estadisticas.html",{"datosGenerales":datosGenerales, "datosVacunadores":datosVacunadores})
 
+def verPerfilVacunador(request, usuario_id):
+    vacunador=Usuario.objects.get(id=usuario_id)
+    id_usuario=vacunador.id
+    return render(request, "website/verPerfilVacunador.html",{"vacunador": vacunador, 'id_usuario':id_usuario })
 
 def verTurnosAcepados(request):
     class Auxiliar():
