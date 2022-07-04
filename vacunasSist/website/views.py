@@ -170,7 +170,7 @@ def verPerfil(request):
                 usuario_form=UpdateVacunadorAdministradorForm(instance = usuario)
                 if(usuario.es_administrador==True):
                     print("administrador")
-                    usuario_form=usuario_form.deshabilitarCamposAdminstrador()
+                    usuario_form=usuario_form.deshabilitarCamposAdministrador()
                    
                 else:
                     print("vacunador")
@@ -761,7 +761,7 @@ def verEstadisticas (request):
     #Toda esta parte es para listar vacunadores
     datosVacunadores = []
     for vacunatorio in vacunatorios: 
-        vacunadores = Usuario.objects.filter(vacunatorio_id=vacunatorio.id).filter(es_vacunador=True)
+        vacunadores = Usuario.objects.filter(vacunatorio_preferencia_id=vacunatorio.id).filter(es_vacunador=True)
         datosLocales = []
         datosLocales.append(vacunatorio.nombre+" en "+vacunatorio.ubicacion)
         if (vacunadores):
@@ -773,9 +773,14 @@ def verEstadisticas (request):
     return render(request,"website/ver_estadisticas.html",{"datosGenerales":datosGenerales, "datosVacunadores":datosVacunadores})
 
 def verPerfilVacunador(request, usuario_id):
-    vacunador=Usuario.objects.get(id=usuario_id)
-    id_usuario=vacunador.id
-    return render(request, "website/verPerfilVacunador.html",{"vacunador": vacunador, 'id_usuario':id_usuario })
+    usuario=Usuario.objects.get(id=usuario_id)
+    id_usuario=usuario.id
+    mismoUsuario=False
+    usuario_form=UpdateVacunadorAdministradorForm(instance = usuario)
+               
+    usuario_form=usuario_form.deshabilitarCamposAdministrador()
+     
+    return render(request, "website/ver_perfil_vacunador.html",{ 'usuario_form':usuario_form, 'id_usuario':id_usuario,'mismoUsuario':mismoUsuario})
 
 def verTurnosAcepados(request):
     class Auxiliar():
