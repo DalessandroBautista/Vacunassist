@@ -40,4 +40,7 @@ urlpatterns = [
     path('modificar_turno/<int:turno_id>/', views.modificarTurno, name="modificar_turno"),
     path('añadir_persona', views.añadirPersona, name="añadir_persona"),
     path('registrar_desde_vacunador', views.registrarDesdeVacunador, name="registrar_desde_vacunador"),
+    path('usuario_ausente/<int:turno_id>',views.usuarioAusente, name="usuario_ausente"),
+    path('usuario_no_ausente/<int:turno_id>',views.usuarioNoAusente, name="usuario_no_ausente"),
+    
 ]

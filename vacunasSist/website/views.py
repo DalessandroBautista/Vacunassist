@@ -491,24 +491,28 @@ def CancelarTurnoUsuario(request,turno_id):
         return render(request, 'website/index.html')
     except Exception as e: 
         messages.error(request, 'El turno no pudo ser cancelado')
+        
+def usuarioAusente(request,turno_id):
+    try:
+        turno= Turno.objects.get(id=turno_id)
+        turno.estado_id=6
+        turno.save()
+        messages.success(request, 'El turno del usuario fue marcado como ausente ')
+        return render(request, 'website/index.html')
+    except Exception as e: 
+        messages.error(request, 'El turno no pudo ser marcado como ausente')
 
+def usuarioNoAusente(request,turno_id):
+    try:
+        turno= Turno.objects.get(id=turno_id)
+        turno.estado_id=2
+        turno.save()
+        messages.success(request, 'El turno del usuario fue desmarcado como ausente ')
+        return render(request, 'website/index.html')
+    except Exception as e: 
+        messages.error(request, 'El turno no pudo ser desmarcado como ausente')
 #ver turnos del dia
 def verTurnosdelDia(request):
-    # try:
-    #     #list_turnos = Turno.objects.filter(fecha=datetime.date.today())
-    #     list_turnos = Turno.objects.all()
-
-    #     #return render(request, 'website/ver_turnos_delDia.html', {'list_turnos':list_turnos, 'fechaHoy':datetime.date.today()})
-    #     #return render(request, 'website/ver_turnos_delDia.html', {})
-    #     if (list_turnos):
-    #         return render(request, 'website/ver_turnos_delDia.html', {
-    #             'list_turnos':list_turnos
-    #         })
-    #     else:
-    #         messages.error(request, 'No hay turnos del dia de hoy')
-    #         return render(request, 'website/index.html',{})
-    # except Exception as e:
-    #     print(repr(e))
     list_turnos = Turno.objects.filter(fecha=datetime.date.today())
     class Auxiliar():
         def __init__(self):
@@ -520,15 +524,13 @@ def verTurnosdelDia(request):
             self.apellido = None
             self.estado = None
     arrAuxiliar = []
+
     if (list_turnos):
         for turno in list_turnos:
             user = Usuario.objects.get(id=turno.user.id)
             aux = Auxiliar()
-            print(turno)
-            print(turno.user.id)
+            print(turno.estado_id)
             vacuna=Vacuna.objects.get(id=turno.vacuna.id)
-            print(vacuna)
-            print(vacuna.id)
             aux.turnoid=turno.id
             aux.idusuario=turno.user.id
             aux.idvacuna=vacuna.id
@@ -541,12 +543,14 @@ def verTurnosdelDia(request):
         fechaHoy= datetime.date.today()
         fechaHoy=fechaHoy.strftime("%d/%m/%y")
         return render(request, 'website/ver_turnos_delDia.html', {
-            'list_turnos':arrAuxiliar, 'fechaHoy':fechaHoy
+            'list_turnos':arrAuxiliar, 'fechaHoy':fechaHoy,'turnos':True
         })
     else:
-        messages.error(request, 'No hay turnos del dia de hoy')
-        return render(request, 'website/index.html',{})
-
+        fechaHoy= datetime.date.today()
+        fechaHoy=fechaHoy.strftime("%d/%m/%y")
+        return render(request, 'website/ver_turnos_delDia.html', {
+            'list_turnos':arrAuxiliar, 'fechaHoy':fechaHoy, 'turnos':False
+        })
 def buscar(request):
     if request.GET["dni"]:
         try:
@@ -720,7 +724,7 @@ def verEstadisticas (request):
         for vacuna in vacunas:
             datosVacuna = []
             valor=0
-            turno = Turno.objects.filter(vacuna=vacuna.nombre).filter(vacunatorio_id=vacunatorio.id).filter(estado_id=4)
+            turno = Turno.objects.filter(vacuna_id=vacuna.id).filter(vacunatorio_id=vacunatorio.id).filter(estado_id=4)
             if (turno is not None):
                 valor = len(turno)
             datosVacuna.append(vacuna.nombre)
@@ -866,7 +870,7 @@ def añadirPersona(request):
             vacunaUsuario.vacuna=vacuna
             vacunaUsuario.user=user
             vacunaUsuario.fecha=date.today()
-            existe=Turno.objects.filter(user_id=user.id).filter(vacuna=vacuna).filter(fecha=date.today())
+            existe=Turno.objects.filter(user_id=user.id).filter(vacuna_id=vacuna.id).filter(fecha=date.today())
             if(not existe):
                 turno.save()
                 vacunaUsuario.save()
@@ -899,10 +903,11 @@ def registrarDesdeVacunador(request):
                 [mail],
                 fail_silently=False
             )     
-            messages.success(request, "Se has registrado al usuario exitosamente")   
-            return render(request,"website/añadir_turno_persona.html",{"form":form})
+            messages.success(request, "Se has registrado al usuario exitosamente")  
+            form=AñadirTurnoUsuario()
+            return render(request,"website/añadir_turno_persona.html",{"form":form}) 
     else:
         form = FormularioUsuario()
-    return render(request, 'website/registration/registro_desde_vacunador.html', {
+    return render(request, 'website/registrar_desde_vacunador.html', {
         'form': form
         })
