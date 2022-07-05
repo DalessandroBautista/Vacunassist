@@ -713,49 +713,53 @@ def aceptarTurnos(request):
         arrAuxiliar = []
         try:
             list_turnos = Turno.objects.filter(estado_id=1)
-            for turno in list_turnos:
-                user= Usuario.objects.get(id=turno.user_id)
-                aux = Auxiliar()
-                print(turno.vacuna)
-                vacuna=Vacuna.objects.get(id=turno.vacuna.id)
-                
-                aux.vacuna=vacuna.nombre
-                aux.turnoid=turno.id
-                aux.idusuario=user.id
-                aux.nombre=user.nombre
-                aux.apellido=user.apellido
-                fecha_form=TurnoConPrioridad()
-                if ((date.today().year-user.fecha_nacimiento.year)>60):
-                    fecha_form.fields['fecha'].initial = date.today() + datetime.timedelta(7)
-                    aux.mensaje= "Se sugiere un turno dentro de los próximos 7 días dado que esta persona es mayor de 60 años"
+            if(len(list_turnos)>0):
+                for turno in list_turnos:
+                    user= Usuario.objects.get(id=turno.user_id)
+                    aux = Auxiliar()
+                    print(turno.vacuna)
+                    vacuna=Vacuna.objects.get(id=turno.vacuna.id)
                     
-                else:
-                    fecha_form.fields['fecha'].initial = date.today() + datetime.timedelta(30)
-                    aux.mensaje= "Se sugiere un turno dentro de 30 días si la persona no es paciente de riesgo, dado que esta persona no es mayor de 60 años"
-                fecha_nacimiento=user.fecha_nacimiento
-                fecha_actual = date.today()
-                print("1")
-                resultado = fecha_actual.year - fecha_nacimiento.year
-                print("2")
-                resultado -= ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month,fecha_nacimiento.day))
-                print("3")
-                fecha_form.fields['turno_id'].initial = aux.turnoid
-                print("4")
-                fecha_form.fields['edad'].initial = resultado
-                print("5")
-                fecha_form.fields['nacimiento'].initial = user.fecha_nacimiento
-                print("6")
-                fecha_form.fields['vacunatorio'].initial = user.vacunatorio_preferencia
-                print("7")
-                fecha_form=fecha_form.deshabilitarCampos()
+                    aux.vacuna=vacuna.nombre
+                    aux.turnoid=turno.id
+                    aux.idusuario=user.id
+                    aux.nombre=user.nombre
+                    aux.apellido=user.apellido
+                    fecha_form=TurnoConPrioridad()
+                    if ((date.today().year-user.fecha_nacimiento.year)>60):
+                        fecha_form.fields['fecha'].initial = date.today() + datetime.timedelta(7)
+                        aux.mensaje= "Se sugiere un turno dentro de los próximos 7 días dado que esta persona es mayor de 60 años"
+                        
+                    else:
+                        fecha_form.fields['fecha'].initial = date.today() + datetime.timedelta(30)
+                        aux.mensaje= "Se sugiere un turno dentro de 30 días si la persona no es paciente de riesgo, dado que esta persona no es mayor de 60 años"
+                    fecha_nacimiento=user.fecha_nacimiento
+                    fecha_actual = date.today()
+                    print("1")
+                    resultado = fecha_actual.year - fecha_nacimiento.year
+                    print("2")
+                    resultado -= ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month,fecha_nacimiento.day))
+                    print("3")
+                    fecha_form.fields['turno_id'].initial = aux.turnoid
+                    print("4")
+                    fecha_form.fields['edad'].initial = resultado
+                    print("5")
+                    fecha_form.fields['nacimiento'].initial = user.fecha_nacimiento
+                    print("6")
+                    fecha_form.fields['vacunatorio'].initial = user.vacunatorio_preferencia
+                    print("7")
+                    fecha_form=fecha_form.deshabilitarCampos()
 
-                print("8")
-                aux.fecha_form=fecha_form
-                print(user.fecha_nacimiento)
-                arrAuxiliar.append(aux)
-            mensaje="Aceptar Turno"
-            return render(request, "website/ver_turnos_aceptables.html",{"list_turnos":arrAuxiliar, "mensaje": mensaje, "modificacion": False })
-
+                    print("8")
+                    aux.fecha_form=fecha_form
+                    print(user.fecha_nacimiento)
+                    arrAuxiliar.append(aux)
+                mensaje="Aceptar Turno"
+                return render(request, "website/ver_turnos_aceptables.html",{"list_turnos":arrAuxiliar, "mensaje": mensaje, "modificacion": False })
+            
+            else:
+                messages.error(request, "No hay turnos solicitados")
+                return render(request, "website/index.html")
         except Exception as e:
             print(e)
         
@@ -864,21 +868,25 @@ def verTurnosAcepados(request):
                 self.idusuario = None
     arrAuxiliar = []
     list_turnos= Turno.objects.filter(estado_id=2)
-    for turno in list_turnos:
-                user= Usuario.objects.get(id=turno.user_id)
-                aux = Auxiliar()
-                vacuna=Vacuna.objects.get(id=turno.vacuna.id)
-                aux.vacuna=vacuna.nombre
-                aux.idturno=turno.id
-                print(turno.id)
-                aux.idusuario=user.id
-                aux.nombre=user.nombre + " " + user.apellido
-                aux.fecha=turno.fecha
-                vacunatorio=Vacunatorio.objects.get(id=turno.vacunatorio_id)
-                aux.vacunatorio=vacunatorio.ubicacion
+    if(len(list_turnos)>0):
+        for turno in list_turnos:
+                    user= Usuario.objects.get(id=turno.user_id)
+                    aux = Auxiliar()
+                    vacuna=Vacuna.objects.get(id=turno.vacuna.id)
+                    aux.vacuna=vacuna.nombre
+                    aux.idturno=turno.id
+                    print(turno.id)
+                    aux.idusuario=user.id
+                    aux.nombre=user.nombre + " " + user.apellido
+                    aux.fecha=turno.fecha
+                    vacunatorio=Vacunatorio.objects.get(id=turno.vacunatorio_id)
+                    aux.vacunatorio=vacunatorio.ubicacion
 
-                arrAuxiliar.append(aux)
-    return render(request,"website/ver_turnos_aceptados.html",{"list_turnos":arrAuxiliar})
+                    arrAuxiliar.append(aux)
+        return render(request,"website/ver_turnos_aceptados.html",{"list_turnos":arrAuxiliar})
+    else:
+        messages.error(request, "No hay turnos aceptados")
+        return render(request, "website/index.html")
 
 def modificarTurno(request,turno_id):
         if(request.method=="POST"):
@@ -1165,13 +1173,9 @@ def enviarRecordatorio(request):
         except Exception as e:
             print(e)
         
-        
-        
-        
-        
-            print('envío de recordatorios')
-            messages.success(request, "Se envió un recordatorio a los pacientes con turnos en los próximos 3 días")
-            return render(request,"website/index.html")
+        print('envío de recordatorios')
+        messages.success(request, "Se envió un recordatorio a los pacientes con turnos en los próximos 3 días")
+        return render(request,"website/index.html")
     except Exception as e:
         print(e)
         return render(request,"website/index.html")
