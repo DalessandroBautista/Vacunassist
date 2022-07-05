@@ -502,7 +502,7 @@ def CancelarTurnoUsuario(request,turno_id):
     try:
         turno= Turno.objects.get(id=turno_id)
         turno.delete()
-        messages.success(request, 'Su turno fue cancelado correctamente')
+        messages.success(request, 'El turno fue cancelado correctamente')
         return render(request, 'website/index.html')
     except Exception as e: 
         messages.error(request, 'El turno no pudo ser cancelado')
@@ -976,7 +976,7 @@ def añadirPersona(request):
                 messages.success(request,"El turno fue cargado con exito")
                 return render(request,"website/index.html")
             else:
-                messages.errir(request,"Ya existe un turno de este usuario para esta vacuna para el día de hoy")
+                messages.error(request,"Ya existe un turno de este usuario para esta vacuna para el día de hoy")
                 return render(request,"website/index.html")
         except Exception as e:
             print(e)

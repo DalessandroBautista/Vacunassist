@@ -49,10 +49,7 @@ urlpatterns = [
     path('ver_vacunadosXvacunador/<int:usuario_id>', views.verVacunadosXvacunador, name="ver_vacunadosXvacunador"),
     path('ver_historico',views.verHistorico, name="ver_historico"),
     path('ver_cancelados',views.verTurnosCancelados, name="ver_cancelados"),
-<<<<<<< HEAD
     path('registrar_vacunador',views.registrarVacunador, name="registrar_vacunador"),
     path('ver_perfil_vacunador/<int:id_usuarios>/eliminar_vacunador/<int:id_usuario>/',views.eliminarVacunador, name="eliminar_vacunador"),
-=======
->>>>>>> e79d652ae2b5747f560127dea2cd4aa89feeba2f
 
 ]
