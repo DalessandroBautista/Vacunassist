@@ -489,7 +489,7 @@ def verHistorialVacunacion(request, usuario_id):
     except Exception as e: 
         print(repr(e))
 
-def EliminarVacunaUsuario(request,historial_vacuna_id):
+def EliminarVacunaUsuario(request,historial_vacuna_id, historial_vacuna_id2):
     try:
         vacuna= Historial_Vacunacion.objects.get(id=historial_vacuna_id)
         vacuna.delete()
@@ -962,14 +962,14 @@ def añadirPersona(request):
             turno.vacuna=vacuna
             vacunatorio=Vacunatorio.objects.get(id=vacunatorio)
             turno.vacunatorio_id=vacunatorio.id
-            turno.estado_id=4
+            turno.estado_id=2
             turno.user_id=user.id
             turno.fecha=date.today()
             vacunaUsuario= VacunaDeUsuario()
             vacunaUsuario.vacuna=vacuna
             vacunaUsuario.user=user
             vacunaUsuario.fecha=date.today()
-            existe=Turno.objects.filter(user_id=user.id).filter(vacuna_id=vacuna.id).filter(fecha=date.today())
+            existe=Turno.objects.filter(user_id=user.id).filter(vacuna_id=vacuna.id)
             if(not existe):
                 turno.save()
                 vacunaUsuario.save()
@@ -1036,14 +1036,10 @@ def registrarVacunador(request):
         })
 def eliminarVacunador(request, id_usuario, id_usuarios):
     user= Usuario.objects.get(id=id_usuario)
-    vacunatorio_libre=Vacunatorio.objects.get(nombre='Sin vacunatorio')
-    if(user.vacunatorio_preferencia_id ==vacunatorio_libre.id): 
-        user.delete()
-        messages.success(request, "El vacunador fue eliminado con exito")
-        return render(request,"website/index.html")
-    else:
-        messages.error(request, "El vacunador no debe tener un vacunatorio de trabajo asignado para ser eliminado")
-        return render(request,"website/index.html")
+    user.es_vacunador=False
+    user.save()
+    messages.success(request, "El vacunador fue eliminado con exito")
+    return render(request,"website/index.html")
     
 def verVacunadosXvacunador(request,usuario_id):
     turnos = Turno.objects.filter(estado_id=4).filter(vacunador_id=usuario_id)
@@ -1062,5 +1058,5 @@ def verTurnosCancelados (request):
     if (turnos):
         return render(request, 'website/verTurnosCancelados.html', {'turnos':turnos})
     else:
-        messages.error(request, 'No hay turnos cancelados el dia de hoy')
+        messages.error(request, 'No hay turnos cancelados')
         return render(request, 'website/index.html')
