@@ -1006,6 +1006,7 @@ def verHistorico(request):
         return render (request, 'website/ver_historico.html',{'turnos':turnos})
     else:
         messages.error(request, 'Aun no hay vacunados')
+        return render(request, 'website/index.html')
 
 def verTurnosCancelados (request):
     turnos = Turno.objects.filter(estado_id=5)
@@ -1013,3 +1014,4 @@ def verTurnosCancelados (request):
         return render(request, 'website/verTurnosCancelados.html', {'turnos':turnos})
     else:
         messages.error(request, 'No hay turnos cancelados el dia de hoy')
+        return render(request, 'website/index.html')
