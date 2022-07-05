@@ -6,19 +6,22 @@
   
   <div class="row">
       <div class="col">
+        <ul>
        {% for vacunatorio in datosVacunadores %}
        <li><a>{{vacunatorio.nombre}} {{vacunatorio.ubicacion}}</a>
+        <ul>
         {% for datos in vacunatorio %}
-        
           {% if datos.nombre %}
-            <a>, Nombre:  </a> <a href="{% url 'ver_perfil_vacunador' datos.id %}">{{datos.nombre}} {{datos.apellido}}</a> <a>, DNI: {{datos.dni}}</a>
+            <li><a>, Nombre:  </a> <a href="{% url 'ver_perfil_vacunador' datos.id %}">{{datos.nombre}} {{datos.apellido}}</a> <a>, DNI: {{datos.dni}}</a> <a <a href="{% url 'ver_vacunadosXvacunador' datos.id %}"> Ver vacunados</a></li>
           {% else %}
 
             <a>{{datos}}</a>
           {% endif %}
         {% endfor %}
+        </ul>
         </li>
        {% endfor %}
+      </ul>
       </div>
 
     </div>

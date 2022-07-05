@@ -56,6 +56,7 @@
                                 </form>
                                 {% if  request.user.es_vacunador%}
                                     <li class="nav-item"><a class="navbar-brand" style="color:white" href="{% url 'ver_turnos_delDia' %}">Ver turnos del dia</a></li>
+                                    <li class="nav-item"><a class="navbar-brand" style="color:white" href="{% url 'ver_cancelados' %}">Ver turnos cancelados</a></li>
                                 {% endif %}
                                 {% comment %}
                                 {% if  request.user.es_vacunador and not request.user.es_administrador %}
@@ -71,11 +72,13 @@
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'aceptar_turnos' %}">Ver turnos solicitados</a></li>
                                         <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_turnos_aceptados' %}">Ver turnos aceptados</a></li>
+                                        <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_historico' %}">Historico de pacientes</a></li>
+                                        <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_cancelados' %}">Ver turnos cancelados</a></li>
                                     </ul>
                                     <a class="nav-item navbar-brand mx-8 dropdown-toggle" id="navbarDropdown" style="color:white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="true">Vacunadores</a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_vacunadores' %}">Ver vacunadores</a></li>
-                                        <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'ver_turnos_aceptados' %}">Añadir vacunador</a></li>
+                                        <li class="nav-item"><a class="dropdown-item" style="color:black" href="{% url 'registrar_vacunador' %}">Añadir vacunador</a></li>
                                     </ul> 
                                     
                                     <li class="nav-item"><a class="navbar-brand " style="color:white" href="{% url 'ver_estadisticas' %}">Ver estadisticas</a></li>

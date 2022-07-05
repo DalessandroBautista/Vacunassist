@@ -135,7 +135,21 @@ class FormularioUsuario(forms.ModelForm):
         if commit:
             user.save()
         return user
-    
+    def saveVacunador(self,commit = True):
+        user = super().save(commit=False)
+        user.es_vacunador = True
+        user.set_password(self.cleaned_data['password1'])
+        if commit:
+            user.save()
+        return user
+    def saveAdministrador(self,commit = True):
+        
+        user = super().save(commit=False)
+        user.es_administrador = True
+        user.set_password(self.cleaned_data['password1'])
+        if commit:
+            user.save()
+        return user
 class UpdateUsuarioForm(forms.ModelForm):
     class Meta:
         model= Usuario

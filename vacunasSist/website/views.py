@@ -990,9 +990,54 @@ def registrarDesdeVacunador(request):
         'form': form
         })
 
-def eliminarVacunador(request, id_usuario):
+def registrarVacunador(request):
+    if request.method == 'POST':
+        form = FormularioUsuario(request.POST)
+        
+        if form.is_valid():
+            
+            mail=request.POST.get("email")         
+            form.saveVacunador()
+            infoForm=form.cleaned_data
+            send_mail(
+                'VacunasSist',
+                'Tu cuenta ha sido creada exitosamente!',
+                'vacunassist2022@gmail.com',
+                [mail],
+                fail_silently=False
+            )     
+            messages.success(request, "Se has registrado al vacunador exitosamente")  
+            return render(request,"website/index.html") 
+    else:
+        form = FormularioUsuario()
+    return render(request, 'website/registrar_desde_vacunador.html', {
+        'form': form
+        })
+def eliminarVacunador(request, id_usuario, id_usuarios):
     user= Usuario.objects.get(id=id_usuario)
-    user.delete()
-    messages.success(request, "El vacunador fue eliminado con exito")
-    return render(request,"website/index.html")
+    vacunatorio_libre=Vacunatorio.objects.get(nombre='Sin vacunatorio')
+    if(user.vacunatorio_preferencia_id ==vacunatorio_libre.id): 
+        user.delete()
+        messages.success(request, "El vacunador fue eliminado con exito")
+        return render(request,"website/index.html")
+    else:
+        messages.error(request, "El vacunador no debe tener un vacunatorio de trabajo asignado para ser eliminado")
+        return render(request,"website/index.html")
     
+def verVacunadosXvacunador(request,usuario_id):
+    turnos = Turno.objects.filter(estado_id=4).filter(vacunador_id=usuario_id)
+    return render (request, 'website/ver_vacunadosXvacunador.html',{'turnos':turnos})
+
+def verHistorico(request):
+    turnos = Turno.objects.filter(estado_id=4).order_by('user_id')
+    if (turnos):
+        return render (request, 'website/ver_historico.html',{'turnos':turnos})
+    else:
+        messages.error(request, 'Aun no hay vacunados')
+
+def verTurnosCancelados (request):
+    turnos = Turno.objects.filter(estado_id=5)
+    if (turnos):
+        return render(request, 'website/verTurnosCancelados.html', {'turnos':turnos})
+    else:
+        messages.error(request, 'No hay turnos cancelados el dia de hoy')

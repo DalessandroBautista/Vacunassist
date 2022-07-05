@@ -1,0 +1,41 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+{% if request.user.es_administrador %} 
+<div class="container">
+  
+  <div class="row">
+      <div class="col">
+        <table >
+            <thead>
+              <tr>
+                <th style="padding:15px">Nombre y apellido</th>
+                <th style="padding:15px">DNI</th>
+                <th style="padding:15px">Vacunatorio</th>
+                <th style="padding:15px">Vacuna aplicada</th>
+                <th style="padding:15px">Vacunador</th>
+                <th style="padding:15px">Fecha</th>
+
+              </tr>
+            </thead>
+            <tbody>
+            {% for turno in turnos %}
+                <tr>
+                    <td style="padding:15px">{{turno.user.nombre}}  {{turno.user.apellido}}</td>
+                    <td style="padding:15px">{{turno.user.dni}}</td>
+                    <td style="padding:15px">{{turno.vacunatorio.nombre}} en {{turno.vacunatorio.ubicacion}}</td>
+                    <td style="padding:15px">{{turno.vacuna.nombre}}</td>
+                    <td style="padding:15px">{{turno.vacunador.nombre}} {{turno.vacunador.apellido}}</td>
+                    <td style="padding:15px">{{turno.fecha}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+      </div>
+
+    </div>
+    </div>
+    {% else %} <h5> No tienes permisos para ver esta página</h5>
+    {% endif %}
+    {% endblock %}
+    

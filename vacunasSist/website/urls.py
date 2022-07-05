@@ -5,6 +5,8 @@ from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView
+from django.urls import include, re_path
+
 
 
 urlpatterns = [
@@ -43,6 +45,11 @@ urlpatterns = [
     path('usuario_ausente/<int:turno_id>',views.usuarioAusente, name="usuario_ausente"),
     path('usuario_no_ausente/<int:turno_id>',views.usuarioNoAusente, name="usuario_no_ausente"),
     path('ver_perfil_vacunador/<int:usuario_id>/',views.verPerfilVacunador, name="ver_perfil_vacunador"),
-    path('busqueda/eliminar_vacunador/<int:id_usuario>/',views.eliminarVacunador, name="eliminar_vacunador"),
     path('ver_vacunadores',views.verVacunadores, name="ver_vacunadores"),
+    path('ver_vacunadosXvacunador/<int:usuario_id>', views.verVacunadosXvacunador, name="ver_vacunadosXvacunador"),
+    path('ver_historico',views.verHistorico, name="ver_historico"),
+    path('ver_cancelados',views.verTurnosCancelados, name="ver_cancelados"),
+    path('registrar_vacunador',views.registrarVacunador, name="registrar_vacunador"),
+    path('ver_perfil_vacunador/<int:id_usuarios>/eliminar_vacunador/<int:id_usuario>/',views.eliminarVacunador, name="eliminar_vacunador"),
+
 ]
