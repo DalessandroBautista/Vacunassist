@@ -1,0 +1,52 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+{% if request.user.es_administrador or request.user.es_vacunador%} 
+<h1> Turnos cancelados</h1>
+<div class="container">
+  <div class="row">
+      <div class="col">
+        <table >
+            <thead>
+              <tr>
+                <th style="padding:15px">Nombre y apellido</th>
+                <th style="padding:15px">DNI</th>
+                <th style="padding:15px">Vacunatorio</th>
+                <th style="padding:15px">Vacuna</th>
+                <th style="padding:15px">Fecha del turno</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for turno in turnos %}
+                {% if request.user.es_vacunador %}
+                    {% if turno.vacunatorio_id == request.user.vacunatorio_preferencia_id%}
+                        <tr>
+                            <td style="padding:15px">{{turno.user.nombre}}  {{turno.user.apellido}}</td>
+                            <td style="padding:15px">{{turno.user.dni}}</td>
+                            <td style="padding:15px">{{turno.vacunatorio.nombre}} en {{turno.vacunatorio.ubicacion}}</td>
+                            <td style="padding:15px">{{turno.vacuna.nombre}}</td>
+                            <td style="padding:15px">{{turno.vacunador.nombre}} {{turno.vacunador.apellido}}</td>
+                            <td style="padding:15px">{{turno.fecha}}</td>
+                        </tr>
+                    {% endif %}
+                {% else %}
+                    <tr>
+                        <td style="padding:15px">{{turno.user.nombre}}  {{turno.user.apellido}}</td>
+                        <td style="padding:15px">{{turno.user.dni}}</td>
+                        <td style="padding:15px">{{turno.vacunatorio.nombre}} en {{turno.vacunatorio.ubicacion}}</td>
+                        <td style="padding:15px">{{turno.vacuna.nombre}}</td>
+                        <td style="padding:15px">{{turno.vacunador.nombre}} {{turno.vacunador.apellido}}</td>
+                        <td style="padding:15px">{{turno.fecha}}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+      </div>
+
+    </div>
+    </div>
+    {% else %} <h5> No tienes permisos para ver esta página</h5>
+    {% endif %}
+    {% endblock %}
+    

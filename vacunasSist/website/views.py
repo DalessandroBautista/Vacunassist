@@ -996,3 +996,20 @@ def eliminarVacunador(request, id_usuario):
     messages.success(request, "El vacunador fue eliminado con exito")
     return render(request,"website/index.html")
     
+def verVacunadosXvacunador(request,usuario_id):
+    turnos = Turno.objects.filter(estado_id=4).filter(vacunador_id=usuario_id)
+    return render (request, 'website/ver_vacunadosXvacunador.html',{'turnos':turnos})
+
+def verHistorico(request):
+    turnos = Turno.objects.filter(estado_id=4).order_by('user_id')
+    if (turnos):
+        return render (request, 'website/ver_historico.html',{'turnos':turnos})
+    else:
+        messages.error(request, 'Aun no hay vacunados')
+
+def verTurnosCancelados (request):
+    turnos = Turno.objects.filter(estado_id=5)
+    if (turnos):
+        return render(request, 'website/verTurnosCancelados.html', {'turnos':turnos})
+    else:
+        messages.error(request, 'No hay turnos cancelados el dia de hoy')
