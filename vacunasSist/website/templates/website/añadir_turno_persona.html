@@ -8,7 +8,6 @@
           {% csrf_token %}
             <a>DNI de la persona: {{form.user}}</a>
             <a>Vacuna: {{form.vacuna}}</a>
-            <a>Vacunatorio: {{form.vacunatorio}}</a>
               {% for error in campo.errors %}
                 <p style="color: red">{{ error }}</p>
               {% endfor %}

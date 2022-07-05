@@ -146,21 +146,40 @@ def verPerfil(request):
         usuario= Usuario.objects.get(id=id_usuario)
         
         if request.method=="POST":
+            print('es un poist  ')
+            verificado=False
+            print(usuario.identidad_verificada)
+            if(usuario.identidad_verificada==True):
+                        print('entre312321')
+                        verificado=True
+                        print(verificado)
             if(usuario.es_vacunador==True):
                 usuario_form =UpdateVacunadorAdministradorForm(request.POST, instance = usuario)
             else:
                 usuario_form =UpdateUsuarioForm(request.POST, instance = usuario)
-
+                print('no es vacunador)')
             if usuario_form.is_valid():
+                print('antes de guardar datos1')
                 try:
+                   
                     print('antes de guardar datos')
+                    print(usuario_form.fields['identidad_verificada'])
                     usuario_form.save()
+                    print(verificado)
+                    if(verificado):
+                        usuario.identidad_verificada=True
+                        usuario.save()
                     print('en guardar datos')
                     messages.success(request, 'Perfil actualizado correctamente')
                     return redirect('index')
-                except Exception as e: 
-                    print(repr(e))
+                except Exception as e:
+                    print('esta excepcion correct') 
+                    print(e)
                     messages.error(request, 'Su perfil no se ha actualizado.')
+                    return render(request, 'website/index.html')
+            else:
+                messages.error(request,'El nombre de usuario debe ser único, por favor ingrese otro.')
+                return render(request, 'website/index.html')
            
         else:
             id_usuario=request.user.id
@@ -397,7 +416,7 @@ def verVacunasAplicadas(request):
                 'lista_vacunas':lista_vacunas
             })
         else:
-            messages.error(request, 'Usted no tiene vacunas aplicadas')
+            messages.error(request, 'Usted no tiene vacunas aplicadas en nuestros vacunatorios')
             return render(request, 'website/index.html',{})
     except Exception as e: 
         print(repr(e))
@@ -489,7 +508,7 @@ def verHistorialVacunacion(request, usuario_id):
     except Exception as e: 
         print(repr(e))
 
-def EliminarVacunaUsuario(request,historial_vacuna_id, historial_vacuna_id2):
+def EliminarVacunaUsuario(request,historial_vacuna_id, historial_vacuna_id2, historial_vacuna_id3, historial_vacuna_id4):
     try:
         vacuna= Historial_Vacunacion.objects.get(id=historial_vacuna_id)
         vacuna.delete()
@@ -963,12 +982,10 @@ def añadirPersona(request):
             dni=request.POST.get("user")
             user= Usuario.objects.get(dni=dni)
             vacuna=request.POST.get("vacuna")
-            vacunatorio=request.POST.get("vacunatorio")
             turno= Turno()
             vacuna=Vacuna.objects.get(id=vacuna)
             turno.vacuna=vacuna
-            vacunatorio=Vacunatorio.objects.get(id=vacunatorio)
-            turno.vacunatorio_id=vacunatorio.id
+            turno.vacunatorio_id=user.vacunatorio_preferencia_id
             turno.estado_id=2
             turno.user_id=user.id
             turno.fecha=date.today()
@@ -1089,4 +1106,72 @@ def añadirRolVacunador(request,id_usuario):
         print(e)
         messages.error(request, "El vacunador no pudo ser agregado")
         return render(request,"website/index.html")
+    
+def enviarRecordatorio(request):
+    try:
+        try:
+            date1=date.today() + datetime.timedelta(1)
+            usuarios1= Turno.objects.get(fecha=date1)
+            for usuarios1 in usuarios1:
+                usuario=Usuario.objects.get(id=usuarios.user_id)
+                mail=usuario.email
+                vacuna=Vacuna.objects.get(id=usuarios.vacuna_id)
+                vacunatorio=Vacunatorio.objects.get(id=usuarios.vacunatorio_id)
+                mensaje='Recordatorio: Usted tiene un turno el día de mañana para la vacuna' + vacuna.nombre + 'en el vacunatorio ' + vacunatorio.nombre + ', dirección: ' + vacunatorio.direccion
+                send_mail(
+                    'VacunasSist',
+                    mensaje,
+                    'vacunassist2022@gmail.com',
+                    [mail],
+                    fail_silently=False
+                )     
+        except Exception as e:
+            print(e)
+        try:
+            date2=date.today() + datetime.timedelta(2)
+            usuarios2= Turno.objects.get(fecha=date2)
+            for usuarios1 in usuarios2:
+                usuario=Usuario.objects.get(id=usuarios.user_id)
+                mail=usuario.email
+                vacuna=Vacuna.objects.get(id=usuarios.vacuna_id)
+                vacunatorio=Vacunatorio.objects.get(id=usuarios.vacunatorio_id)
+                mensaje= 'Recordatorio: Usted tiene un turno para dentro de 2 días para la vacuna' + vacuna.nombre + 'en el vacunatorio ' + vacunatorio.nombre + ', dirección: '+  vacunatorio.direccion
+                send_mail(
+                    'VacunasSist',
+                    mensaje,
+                    'vacunassist2022@gmail.com',
+                    [mail],
+                    fail_silently=False
+                )     
+            
+        except Exception as e: 
+            print(e)
+        try:
+            date3= date.today() + datetime.timedelta(3)
+            usuarios3= Turno.objects.get(fecha=date3)
+            for usuarios1 in usuarios3:
+                usuario=Usuario.objects.get(id=usuarios.user_id)
+            mail=usuario.email
+            vacuna=Vacuna.objects.get(id=usuarios.vacuna_id)
+            vacunatorio=Vacunatorio.objects.get(id=usuarios.vacunatorio_id)
+            mensaje= 'Recordatorio: Usted tiene un turno para dentro de 3 días para la vacuna' + vacuna.nombre + 'en el vacunatorio ' + vacunatorio.nombre +', dirección: '+ vacunatorio.direccion
+            send_mail(
+                'VacunasSist',
+                mensaje,
+                'vacunassist2022@gmail.com',
+                [mail],
+                fail_silently=False
+            )     
+        except Exception as e:
+            print(e)
         
+        
+        
+        
+        
+            print('envío de recordatorios')
+            messages.success(request, "Se envió un recordatorio a los pacientes con turnos en los próximos 3 días")
+            return render(request,"website/index.html")
+    except Exception as e:
+        print(e)
+        return render(request,"website/index.html")

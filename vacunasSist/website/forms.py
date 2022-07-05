@@ -359,7 +359,7 @@ class AñadirTurnoUsuario(forms.ModelForm):
     fecha = forms.DateField(widget = forms.SelectDateWidget, label="date.today()")
     class Meta:
         model=Turno
-        fields=['user','vacuna','estado','vacunatorio']
+        fields=['user','vacuna','estado']
         widgets ={'user': forms.NumberInput(
                 attrs={
                     'class':'form-control',
