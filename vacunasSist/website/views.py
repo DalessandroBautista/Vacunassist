@@ -654,6 +654,13 @@ def aceptarTurnos(request):
                 turno.estado_id= EstadosTurno.objects.get(id="2")
                 vacunatorio=request.POST.get("vacunatorio")
                 turno.vacunatorio=Vacunatorio.objects.get(id=vacunatorio)
+                send_mail(
+                'VacunasSist - Turno aceptado',
+                'Tu turno para ' +turno.vacuna.nombre+ ' ha sido aceptado para la fecha '+turno.fecha+' recuerda presentarte dentro de las 8 y 18hs, en caso de no asistir, cancela el turno ',
+                'vacunassist2022@gmail.com',
+                [turno.user.email],
+                fail_silently=False
+                ) 
                 turno.save()
                 messages.success(request, 'El turno fue aceptado correctamente')
                 return render(request, 'website/index.html')
@@ -730,6 +737,13 @@ def RechazarTurnoUsuario(request,turno_id):
     try:
         turno= Turno.objects.get(id=turno_id)
         turno.estado_id= EstadosTurno.objects.get(id="3")
+        send_mail(
+            'VacunasSist - Turno rechazado',
+            'Tu turno para ' +turno.vacuna.nombre+ ' ha sido rechazado ',
+            'vacunassist2022@gmail.com',
+            [turno.user.email],
+            fail_silently=False
+        ) 
         turno.save()
         messages.success(request, 'El turno fue rechazado correctamente')
         return render(request, 'website/index.html')
@@ -868,6 +882,13 @@ def modificarTurno(request,turno_id):
                     turno.estado_id= EstadosTurno.objects.get(id="2")
                     vacunatorio=request.POST.get("vacunatorio")
                     turno.vacunatorio=Vacunatorio.objects.get(id=vacunatorio)
+                    send_mail(
+                    'VacunasSist - Turno modificado',
+                    'Tu turno para ' +turno.vacuna.nombre+ ' ha sido modificado para la fecha '+turno.fecha+' recuerda presentarte dentro de las 8 y 18hs, en caso de no asistir, cancela el turno ',
+                    'vacunassist2022@gmail.com',
+                    [turno.user.email],
+                    fail_silently=False
+                    ) 
                     turno.save()
                     messages.success(request, 'El turno fue modificado correctamente')
                     return render(request, 'website/index.html')
@@ -1034,6 +1055,7 @@ def verHistorico(request):
         return render (request, 'website/ver_historico.html',{'turnos':turnos})
     else:
         messages.error(request, 'Aun no hay vacunados')
+        return render(request, 'website/index.html')
 
 def verTurnosCancelados (request):
     turnos = Turno.objects.filter(estado_id=5)
@@ -1041,3 +1063,4 @@ def verTurnosCancelados (request):
         return render(request, 'website/verTurnosCancelados.html', {'turnos':turnos})
     else:
         messages.error(request, 'No hay turnos cancelados el dia de hoy')
+        return render(request, 'website/index.html')
