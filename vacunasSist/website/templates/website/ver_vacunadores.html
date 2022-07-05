@@ -12,7 +12,7 @@
         <ul>
         {% for datos in vacunatorio %}
           {% if datos.nombre %}
-            <li><a>, Nombre:  </a> <a href="{% url 'ver_perfil_vacunador' datos.id %}">{{datos.nombre}} {{datos.apellido}}</a> <a>, DNI: {{datos.dni}}</a> <a <a href="{% url 'ver_vacunadosXvacunador' datos.id %}"> Ver vacunados</a></li>
+            <li><a>Nombre:  </a> <a href="{% url 'ver_perfil_vacunador' datos.id %}">{{datos.nombre}} {{datos.apellido}}</a> <a>, DNI: {{datos.dni}}</a> <a <a href="{% url 'ver_vacunadosXvacunador' datos.id %}"> Ver vacunados</a></li>
           {% else %}
 
             <a>{{datos}}</a>

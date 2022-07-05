@@ -26,6 +26,9 @@
                 <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'cargar_vacuna' %}">Cargar vacuna</a></div>
                 
               </div>
+              {%else%}
+            <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'añadir_rol_vacunador' id_usuario %}">Marcar como vacunador</a></div>
+          
             {% endif%}
           {% endif%} 
           <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'ver_historial_vacunacion' id_usuario %}">Ver historial de vacunacion</a></div>

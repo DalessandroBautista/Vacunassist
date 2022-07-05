@@ -51,5 +51,5 @@ urlpatterns = [
     path('ver_cancelados',views.verTurnosCancelados, name="ver_cancelados"),
     path('registrar_vacunador',views.registrarVacunador, name="registrar_vacunador"),
     path('ver_perfil_vacunador/<int:id_usuarios>/eliminar_vacunador/<int:id_usuario>/',views.eliminarVacunador, name="eliminar_vacunador"),
-
+    path('añadir_rol_vacunador/<int:id_usuario>', views.añadirRolVacunador, name="añadir_rol_vacunador")
 ]

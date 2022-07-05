@@ -1036,10 +1036,14 @@ def registrarVacunador(request):
         })
 def eliminarVacunador(request, id_usuario, id_usuarios):
     user= Usuario.objects.get(id=id_usuario)
-    user.es_vacunador=False
-    user.save()
-    messages.success(request, "El vacunador fue eliminado con exito")
-    return render(request,"website/index.html")
+    vacunatorio_libre=Vacunatorio.objects.get(nombre='Sin vacunatorio')
+    if(user.vacunatorio_preferencia_id ==vacunatorio_libre.id): 
+        user.es_vacunador=False
+        user.save()
+        messages.success(request, "El vacunador fue eliminado con exito")
+        return render(request,"website/index.html")
+    else:
+        messages.error(request, "El vacunador no debe tener un vacunatorio de trabajo asignado para ser eliminado")
     
 def verVacunadosXvacunador(request,usuario_id):
     turnos = Turno.objects.filter(estado_id=4).filter(vacunador_id=usuario_id)
@@ -1060,3 +1064,22 @@ def verTurnosCancelados (request):
     else:
         messages.error(request, 'No hay turnos cancelados')
         return render(request, 'website/index.html')
+
+def añadirRolVacunador(request,id_usuario):
+    try:
+        print('entre')
+        
+        user= Usuario.objects.get(id=id_usuario)
+        vacunatorio_libre=Vacunatorio.objects.get(nombre='Sin vacunatorio')
+        print('hay vacunatorio libre')
+        user.vacunatorio_preferencia_id=vacunatorio_libre.id
+        user.es_vacunador=True
+        print("parte 302")
+        user.save()
+        messages.success(request, "El vacunador fue agregado con exito")
+        return render(request,"website/index.html")
+    except Exception as e:
+        print(e)
+        messages.error(request, "El vacunador no pudo ser agregado")
+        return render(request,"website/index.html")
+        
