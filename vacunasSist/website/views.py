@@ -501,6 +501,13 @@ def EliminarVacunaUsuario(request,historial_vacuna_id, historial_vacuna_id2):
 def CancelarTurnoUsuario(request,turno_id):
     try:
         turno= Turno.objects.get(id=turno_id)
+        send_mail(
+            'VacunasSist - Turno cancelado',
+            'Tu turno para ' +turno.vacuna.nombre+ ' ha sido cancelado ',
+            'vacunassist2022@gmail.com',
+            [turno.user.email],
+            fail_silently=False
+        ) 
         turno.delete()
         messages.success(request, 'El turno fue cancelado correctamente')
         return render(request, 'website/index.html')
@@ -656,7 +663,7 @@ def aceptarTurnos(request):
                 turno.vacunatorio=Vacunatorio.objects.get(id=vacunatorio)
                 send_mail(
                 'VacunasSist - Turno aceptado',
-                'Tu turno para ' +turno.vacuna.nombre+ ' ha sido aceptado para la fecha '+turno.fecha+' recuerda presentarte dentro de las 8 y 18hs, en caso de no asistir, cancela el turno ',
+                'Tu turno para ' +turno.vacuna.nombre+ ' ha sido aceptado para la fecha '+turno.fecha+' en el vacunatorio '+turno.vacunatorio.nombre+' en '+turno.vacunatorio.ubicacion+', recuerda presentarte dentro de las 8 y 18hs, en caso de no asistir, cancela el turno ',
                 'vacunassist2022@gmail.com',
                 [turno.user.email],
                 fail_silently=False
@@ -884,7 +891,7 @@ def modificarTurno(request,turno_id):
                     turno.vacunatorio=Vacunatorio.objects.get(id=vacunatorio)
                     send_mail(
                     'VacunasSist - Turno modificado',
-                    'Tu turno para ' +turno.vacuna.nombre+ ' ha sido modificado para la fecha '+turno.fecha+' recuerda presentarte dentro de las 8 y 18hs, en caso de no asistir, cancela el turno ',
+                    'Tu turno para ' +turno.vacuna.nombre+ ' ha sido modificado para la fecha '+turno.fecha+' en el vacunatorio '+turno.vacunatorio.nombre+' en '+turno.vacunatorio.ubicacion+', recuerda presentarte dentro de las 8 y 18hs, en caso de no asistir, cancela el turno ',
                     'vacunassist2022@gmail.com',
                     [turno.user.email],
                     fail_silently=False
