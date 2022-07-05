@@ -489,7 +489,7 @@ def verHistorialVacunacion(request, usuario_id):
     except Exception as e: 
         print(repr(e))
 
-def EliminarVacunaUsuario(request,historial_vacuna_id):
+def EliminarVacunaUsuario(request,historial_vacuna_id, historial_vacuna_id2):
     try:
         vacuna= Historial_Vacunacion.objects.get(id=historial_vacuna_id)
         vacuna.delete()
@@ -502,7 +502,7 @@ def CancelarTurnoUsuario(request,turno_id):
     try:
         turno= Turno.objects.get(id=turno_id)
         turno.delete()
-        messages.success(request, 'Su turno fue cancelado correctamente')
+        messages.success(request, 'El turno fue cancelado correctamente')
         return render(request, 'website/index.html')
     except Exception as e: 
         messages.error(request, 'El turno no pudo ser cancelado')
@@ -1011,9 +1011,33 @@ def registrarDesdeVacunador(request):
         'form': form
         })
 
-def eliminarVacunador(request, id_usuario):
+def registrarVacunador(request):
+    if request.method == 'POST':
+        form = FormularioUsuario(request.POST)
+        
+        if form.is_valid():
+            
+            mail=request.POST.get("email")         
+            form.saveVacunador()
+            infoForm=form.cleaned_data
+            send_mail(
+                'VacunasSist',
+                'Tu cuenta ha sido creada exitosamente!',
+                'vacunassist2022@gmail.com',
+                [mail],
+                fail_silently=False
+            )     
+            messages.success(request, "Se has registrado al vacunador exitosamente")  
+            return render(request,"website/index.html") 
+    else:
+        form = FormularioUsuario()
+    return render(request, 'website/registrar_desde_vacunador.html', {
+        'form': form
+        })
+def eliminarVacunador(request, id_usuario, id_usuarios):
     user= Usuario.objects.get(id=id_usuario)
     user.es_vacunador=False
+    user.save()
     messages.success(request, "El vacunador fue eliminado con exito")
     return render(request,"website/index.html")
     

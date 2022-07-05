@@ -5,6 +5,8 @@ from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView
+from django.urls import include, re_path
+
 
 
 urlpatterns = [
@@ -27,7 +29,7 @@ urlpatterns = [
     path('requisitos_vacunas', views.verRequisitos, name="requisitos_vacunas"),
     path('cargar_vacuna', views.cargarVacuna, name="cargar_vacuna"),
     path('ver_historial_vacunacion/<int:usuario_id>/',views.verHistorialVacunacion, name="ver_historial_vacunacion"),
-    path('eliminar_vacuna_usuario/<int:historial_vacuna_id>/',views.EliminarVacunaUsuario, name="eliminar_vacuna_usuario"),
+    path('ver_historial_vacunacion/<int:historial_vacuna_id2>/eliminar_vacuna_usuario/<int:historial_vacuna_id>/',views.EliminarVacunaUsuario, name="eliminar_vacuna_usuario"),
     path('cancelar_turno_usuario/<int:turno_id>/',views.CancelarTurnoUsuario, name="cancelar_turno_usuario"),
     path('ver_turnos_delDia',views.verTurnosdelDia, name="ver_turnos_delDia"),
     path('busqueda/', views.buscar, name="buscar"),
@@ -43,10 +45,11 @@ urlpatterns = [
     path('usuario_ausente/<int:turno_id>',views.usuarioAusente, name="usuario_ausente"),
     path('usuario_no_ausente/<int:turno_id>',views.usuarioNoAusente, name="usuario_no_ausente"),
     path('ver_perfil_vacunador/<int:usuario_id>/',views.verPerfilVacunador, name="ver_perfil_vacunador"),
-    path('busqueda/eliminar_vacunador/<int:id_usuario>/',views.eliminarVacunador, name="eliminar_vacunador"),
     path('ver_vacunadores',views.verVacunadores, name="ver_vacunadores"),
     path('ver_vacunadosXvacunador/<int:usuario_id>', views.verVacunadosXvacunador, name="ver_vacunadosXvacunador"),
     path('ver_historico',views.verHistorico, name="ver_historico"),
     path('ver_cancelados',views.verTurnosCancelados, name="ver_cancelados"),
+    path('registrar_vacunador',views.registrarVacunador, name="registrar_vacunador"),
+    path('ver_perfil_vacunador/<int:id_usuarios>/eliminar_vacunador/<int:id_usuario>/',views.eliminarVacunador, name="eliminar_vacunador"),
 
 ]

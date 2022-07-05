@@ -19,7 +19,7 @@
             <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="{% url 'modificar_password' %}">Modificar contraseña</a></div>
                 
           {% endif%}
-          {% if request.user.es_administrador %} 
+          {% if request.user.es_administrador  and not busqueda %} 
           <div class="nav-item"><a class="btn btn-outline-dark mt-auto" href="#" onclick="eliminar({{id_usuario}})">Eliminar vacunador</a></div>
           {%endif%}
         </div>
@@ -41,7 +41,7 @@
         })
         .then(function(result){
           if(result.isConfirmed){
-            window.location.href= "eliminar_vacunador/"+id+"/"
+            window.location.href= "/ver_perfil_vacunador/" + id + "/eliminar_vacunador/"+id+"/"
           }
     
         })
