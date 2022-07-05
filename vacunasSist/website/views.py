@@ -962,21 +962,21 @@ def añadirPersona(request):
             turno.vacuna=vacuna
             vacunatorio=Vacunatorio.objects.get(id=vacunatorio)
             turno.vacunatorio_id=vacunatorio.id
-            turno.estado_id=4
+            turno.estado_id=2
             turno.user_id=user.id
             turno.fecha=date.today()
             vacunaUsuario= VacunaDeUsuario()
             vacunaUsuario.vacuna=vacuna
             vacunaUsuario.user=user
             vacunaUsuario.fecha=date.today()
-            existe=Turno.objects.filter(user_id=user.id).filter(vacuna_id=vacuna.id).filter(fecha=date.today())
+            existe=Turno.objects.filter(user_id=user.id).filter(vacuna_id=vacuna.id)
             if(not existe):
                 turno.save()
                 vacunaUsuario.save()
                 messages.success(request,"El turno fue cargado con exito")
                 return render(request,"website/index.html")
             else:
-                messages.errir(request,"Ya existe un turno de este usuario para esta vacuna para el día de hoy")
+                messages.error(request,"Ya existe un turno de este usuario para esta vacuna para el día de hoy")
                 return render(request,"website/index.html")
         except Exception as e:
             print(e)
@@ -1013,7 +1013,7 @@ def registrarDesdeVacunador(request):
 
 def eliminarVacunador(request, id_usuario):
     user= Usuario.objects.get(id=id_usuario)
-    user.delete()
+    user.es_vacunador=False
     messages.success(request, "El vacunador fue eliminado con exito")
     return render(request,"website/index.html")
     
